@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:title="Device Information">
+	<Preference 
+	    android:title="Device"
+	    android:icon="@drawable/device"
+	    android:summary=""
+	    android:key="device_view"/>
+	<Preference 
+	    android:title="ROM"
+	    android:icon="@drawable/hammer"
+	    android:summary=""
+	    android:key="rom_view"/>
+	<Preference 
+	    android:title="Version"
+	    android:summary=""
+	    android:icon="@drawable/version"
+	    android:key="version_view"/>
+	<Preference 
+	    android:title="Build-Fingerprint"
+	    android:summary="@drawable/key"
+	    android:icon="@drawable/key"
+	    android:key="build_view"/>          
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Updates">
+    </PreferenceCategory>
+    <Preference
+        android:title="Available Updates"
+        android:icon="@drawable/cloud"
+        android:summary=""
+        android:key="avail_updates"/>
+</PreferenceScreen>
