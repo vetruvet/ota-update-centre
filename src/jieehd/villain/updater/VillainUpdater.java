@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -33,6 +34,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -56,14 +58,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
 
 public class VillainUpdater extends PreferenceActivity {
-    private Button btnDown;
     private HttpClient client;
-    private JSONObject device;
-    private String rom;
-    private JSONObject device_id;
 
     private File sdDir = Environment.getExternalStorageDirectory();
     public String PATH = sdDir + "/VillainROM/ROMs/VillainROM";
@@ -75,6 +72,7 @@ public class VillainUpdater extends PreferenceActivity {
 
     /** Called when the activity is first created. */
     @Override
+    @SuppressWarnings("deprecation")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.main);
@@ -105,7 +103,7 @@ public class VillainUpdater extends PreferenceActivity {
 
     public void requestRoot() {
         try {
-            Process root = Runtime.getRuntime().exec("su");
+            Runtime.getRuntime().exec("su");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -186,13 +184,14 @@ public class VillainUpdater extends PreferenceActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent i;
         switch (item.getItemId()) {
         case R.id.view:
-            Intent i = new Intent(getApplicationContext(), getfiles.class);
+            i = new Intent(getApplicationContext(), getfiles.class);
             startActivity(i);
             break;
         case R.id.settings:
-            Intent i = new Intent(getApplicationContext(), villainsettings.class);
+            i = new Intent(getApplicationContext(), villainsettings.class);
             startActivity(i);
             break;
         case R.id.exit:
@@ -207,8 +206,6 @@ public class VillainUpdater extends PreferenceActivity {
     }
 
     public JSONObject getVersion() throws ClientProtocolException, IOException, JSONException {
-        String romType = android.os.Build.DISPLAY;
-
         HttpGet get = new HttpGet("http://dl.dropbox.com/u/44265003/update.json");
         HttpResponse r = client.execute(get);
         int status = r.getStatusLine().getStatusCode();
@@ -257,7 +254,7 @@ public class VillainUpdater extends PreferenceActivity {
         @Override
         protected Display doInBackground(String... params) {
             String buildDevice = android.os.Build.DEVICE.toUpperCase();
-            String rom, changelog, downurl, build;
+            String rom = "", changelog = "", downurl = "", build = "";
             try {
                 JSONObject json = null;
                 if (buildDevice.equals("PYRAMID")) {
@@ -315,6 +312,7 @@ public class VillainUpdater extends PreferenceActivity {
         }
 
         @Override
+        @SuppressWarnings("deprecation")
         public void onPostExecute(final Display result) {
             boolean file = new File(sdDir + "/VillainROM/ROMs").exists();
             if (file) {
@@ -390,7 +388,7 @@ public class VillainUpdater extends PreferenceActivity {
 
                             public void updateProgress(final long total, final int lengthOfFile) {
                                 runOnUiThread(new Runnable() {
-                                    @Override;
+                                    @Override
                                     public void run() {
                                         mProgressDialog.setMax(lengthOfFile);
                                         mProgressDialog.setProgress((int) total);

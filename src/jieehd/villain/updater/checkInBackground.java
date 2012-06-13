@@ -32,17 +32,12 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 
 public class checkInBackground extends BroadcastReceiver {
     private  Context mContext;
-    private NotificationManager nm;
-    private HttpClient client;
-    private JSONObject json;
-    private JSONObject device;
     final static String URL = "http://dl.dropbox.com/u/44265003/update.json";
     boolean available = false;
     
@@ -94,7 +89,7 @@ public class checkInBackground extends BroadcastReceiver {
         @Override
         protected Display doInBackground(String... params) {
             String buildDevice = android.os.Build.DEVICE.toUpperCase();
-            String rom, changelog, downurl, build;
+            String rom = "", changelog = "", downurl = "", build = "";
             try {
                 JSONObject json = null;
                 if (buildDevice.equals("PYRAMID")) {
@@ -165,14 +160,18 @@ public class checkInBackground extends BroadcastReceiver {
 	}
 	 
 	public void notifyUser() {
-        final NotificationManager nm;
-        nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        final NotificationManager nm = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         CharSequence from = "Villain Updater";
         CharSequence message = "New Updates!";
         PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, new Intent(), 0);
-        Notification notif = new Notification(R.drawable.updates, "New updates!", System.currentTimeMillis());
-        notif.setLatestEventInfo(mContext, from, message, contentIntent);
-        nm.notify(1, notif);
+        Notification.Builder builder = new Notification.Builder(mContext);
+        builder.setContentIntent(contentIntent);
+        builder.setContentTitle(from);
+        builder.setContentText(message);
+        builder.setTicker(message);
+        builder.setWhen(System.currentTimeMillis());
+        builder.setSmallIcon(R.drawable.updates);
+        nm.notify(1, builder.getNotification());
 	}
 
 	@Override

@@ -16,9 +16,6 @@
 
 package jieehd.villain.updater;
 
-import org.apache.http.client.HttpClient;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -29,10 +26,8 @@ public class appUpdates extends AsyncTask<Object, Object, Object>{
     final static String URL = "http://dl.dropbox.com/u/44265003/update.json";
 
     private Context mContext;
-    private HttpClient client;
-    private JSONObject json;
 
-    private boolean haveNetworkConnection() {
+    public boolean haveNetworkConnection() {
         boolean haveConnectedWifi = false;
         boolean haveConnectedMobile = false;
 

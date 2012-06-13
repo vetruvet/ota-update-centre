@@ -26,6 +26,7 @@ import android.preference.Preference.OnPreferenceClickListener;
 
 public class villainsettings extends PreferenceActivity implements OnSharedPreferenceChangeListener {
     @Override
+    @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
@@ -109,12 +110,14 @@ public class villainsettings extends PreferenceActivity implements OnSharedPrefe
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void onResume() {
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void onPause() {
         super.onPause();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
