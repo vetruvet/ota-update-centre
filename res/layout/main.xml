@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" style="@style/info_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
-    
+    android:orientation="vertical">
+
     <TextView
         android:id="@+id/tvDeviceHeading"
         android:layout_width="wrap_content"
@@ -22,7 +22,7 @@
         android:layout_width="fill_parent"
         android:layout_height="0.5dip"
         android:layout_gravity="center|left"
-        android:background="#656565" >
+        android:background="#656565">
 
     </LinearLayout>
 
@@ -45,13 +45,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="" />
-    
+
     <LinearLayout
         android:id="@+id/horizontalLine1"
         android:layout_width="fill_parent"
         android:layout_height="0.5dip"
         android:layout_gravity="center|left"
-        android:background="#656565" >
+        android:background="#656565">
 
     </LinearLayout>
 
@@ -74,13 +74,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="" />
-    
+
     <LinearLayout
         android:id="@+id/horizontalLine2"
         android:layout_width="fill_parent"
         android:layout_height="0.5dip"
         android:layout_gravity="center|left"
-        android:background="#656565" >
+        android:background="#656565">
 
     </LinearLayout>
 
@@ -91,34 +91,34 @@
         android:text=""
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Build-fingerprint"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Build-fingerprint"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/tvBuild"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="" />
-    
+
     <LinearLayout
         android:id="@+id/horizontalLine3"
         android:layout_width="fill_parent"
         android:layout_height="0.5dip"
         android:layout_gravity="center|left"
         android:background="#656565"
-        android:gravity="left" >
+        android:gravity="left">
 
     </LinearLayout>
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/tvNewVer"
