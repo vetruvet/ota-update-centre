@@ -59,6 +59,22 @@ public class OTAUpdaterActivity extends PreferenceActivity {
     @SuppressWarnings("deprecation")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (System.getProperty(FetchRomInfoTask.OTA_ID_PROP) == null) {
+        	AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        	alert.setTitle(R.string.alert_unsupported_title);
+        	alert.setMessage(R.string.alert_unsupported_message);
+        	alert.setCancelable(false);
+        	alert.setPositiveButton(R.string.alert_exit, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+					finish();
+				}
+			});
+        	alert.create().show();
+        }
+
         addPreferencesFromResource(R.xml.main);
 
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

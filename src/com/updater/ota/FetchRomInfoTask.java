@@ -35,6 +35,7 @@ import android.os.AsyncTask;
 
 public class FetchRomInfoTask extends AsyncTask<Void, Void, RomInfo> {
     public static final String ROM_UPDATE_URL = "http://sensation-devs.org/romupdater2/pages/romupdate.php";
+    public static final String OTA_ID_PROP = "otaupdater.otaid";
 
     private RomInfoListener callback = null;
     private Context context = null;
@@ -60,7 +61,7 @@ public class FetchRomInfoTask extends AsyncTask<Void, Void, RomInfo> {
 
         try {
             String device = android.os.Build.DEVICE.toLowerCase();
-            String romID = System.getProperty("otaupdater.otaid");
+            String romID = System.getProperty(OTA_ID_PROP);
 
             ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
             params.add(new BasicNameValuePair("device", device));

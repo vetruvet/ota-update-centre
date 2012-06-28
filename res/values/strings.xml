@@ -26,6 +26,8 @@
     <string name="alert_update_title">ROM update available!</string>
     <string name="alert_download">Download</string>
     <string name="alert_downloading">Downloading&#8230;</string>
+    <string name="alert_unsupported_title">Unsupported ROM</string>
+    <string name="alert_unsupported_message">The ROM developer has not enabled support for the OTA Updater! Please ask them (kindly) to add support before using this app!</string>
     
     <string name="menu_view">View Downloaded ROMs</string>
     <string name="menu_settings">Settings</string>
