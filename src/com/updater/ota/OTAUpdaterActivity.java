@@ -268,9 +268,9 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 								@Override
 								protected void onProgressUpdate(Integer... values) {
 									if (values.length == 0) return;
-                                    progressDialog.setProgress(values[0]);
+                                    progressDialog.setProgress(values[0] / 1048576);
                                     if (values.length == 1) return;
-                                    progressDialog.setMax(values[1]);
+                                    progressDialog.setMax(values[1] / 1048576);
 								}
 							}.execute();
                         }
