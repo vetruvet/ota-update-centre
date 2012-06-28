@@ -2,42 +2,38 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="Device Information">
+        android:title="@string/main_device_info">
 
         <Preference
-            android:title="Device"
+            android:title="@string/main_device"
             android:icon="@drawable/device"
-            android:summary=""
             android:key="device_view" />
 
         <Preference
-            android:title="ROM"
+            android:title="@string/main_rom"
             android:icon="@drawable/hammer"
-            android:summary=""
             android:key="rom_view" />
 
         <Preference
-            android:title="Version"
-            android:summary=""
+            android:title="@string/main_version"
             android:icon="@drawable/version"
             android:key="version_view" />
 
         <Preference
-            android:title="Build-Fingerprint"
-            android:summary="@drawable/key"
+            android:title="@string/main_build"
             android:icon="@drawable/key"
             android:key="build_view" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Updates">
+        android:title="@string/main_updates">
+        
+        <Preference
+	        android:title="@string/main_avail_updates"
+	        android:icon="@drawable/cloud"
+	        android:key="avail_updates" />
+	        
     </PreferenceCategory>
-
-    <Preference
-        android:title="Available Updates"
-        android:icon="@drawable/cloud"
-        android:summary=""
-        android:key="avail_updates" />
 
 </PreferenceScreen>
