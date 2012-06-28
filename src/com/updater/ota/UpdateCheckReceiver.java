@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 VillainROM
+ * Copyright (C) 2012 OTA Updater
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * You may only use this file in compliance with the license and provided you are not associated with or are in co-operation anyone by the name 'X Vanderpoel'.
