@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jieehd.villain.updater;
+package com.updater.ota;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -24,8 +24,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-
-import jieehd.villain.updater.FetchRomInfoTask.RomInfoListener;
 
 import org.apache.http.client.ClientProtocolException;
 
@@ -48,6 +46,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.updater.ota.FetchRomInfoTask.RomInfoListener;
 
 public class OTAUpdaterActivity extends PreferenceActivity {
     protected static final String Display = null;

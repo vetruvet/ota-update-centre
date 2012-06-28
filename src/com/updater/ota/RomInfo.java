@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package jieehd.villain.updater;
+package com.updater.ota;
 
 public class RomInfo {
     public String mRom;
     public String mChange;
     public String mUrl;
     public String mBuild;
-    
+
     public RomInfo(String rom, String changelog, String downurl, String build) {
         mRom = rom;
         mChange = changelog;

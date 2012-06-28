@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jieehd.villain.updater;
+package com.updater.ota;
 
 import java.io.File;
 import java.util.ArrayList;
