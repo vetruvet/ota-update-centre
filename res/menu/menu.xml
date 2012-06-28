@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/view"
-        android:title="View Downloads" />
+        android:title="@string/menu_view" />
 
     <item android:id="@+id/settings"
-        android:title="Settings" />
+        android:title="@string/menu_settings" />
 
     <item android:id="@+id/refresh"
-        android:title="Refresh" />
+        android:title="@string/menu_refresh" />
 
     <item android:id="@+id/exit"
-        android:title="Exit" />
+        android:title="@string/menu_exit" />
 
 </menu>

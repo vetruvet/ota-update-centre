@@ -1,7 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, VillainUpdater!</string>
-    <string name="app_name">VillainUpdater</string>
+    <string name="app_name">OTA Updater</string>
+    
+    <string name="app_update_url" translatable="false">http://sensation-devs.org/romupdater2/pages/notthereyet.php</string>
+    
+    <string name="notif_text_rom">OTA ROM Update Available</string>
+    <string name="notif_text_app">OTA App Update Available</string>
+    <string name="notif_source">OTA Updater</string>
+    
+    <string name="alert_nodata_title">No Data Connection!</string>
+    <string name="alert_nodata_message">You have no data connection\nPlease turn on Wi-Fi or Mobile Data in order to check for and download OTA updates.</string>
+    <string name="alert_wifi_settings">Wi-Fi Settings</string>
+    <string name="alert_ignore">Ignore</string>
+    <string name="alert_exit">Exit</string>
+    <string name="alert_options_title">Options</string>
+    <string name="alert_rename_title">Rename file</string>
+    <string name="alert_rename_message">Enter new file name</string>
+    <string name="alert_ok">OK</string>
+    <string name="alert_cancel">Cancel</string>
+    <string name="alert_rename">Rename</string>
+    <string name="alert_install_title">Install ZIP</string>
+    <string name="alert_install">Install</string>
+    <string name="alert_install_message">Installing the file will reboot into recovery to flash the ZIP file. After installation, the system will automatically reboot.</string>
+    <string name="alert_update_title">ROM update available!</string>
+    <string name="alert_download">Download</string>
+    <string name="alert_downloading">Downloading&#8230;</string>
+    
+    <string name="menu_view">View Downloaded ROMs</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_exit">Exit</string>
+    
+    <string name="toast_rename">File renamed succesfully</string>
+    <string name="toast_rename_error">There was a problem while renaming the selected file</string>
+    <string name="toast_delete">File deleted succesfully</string>
+    <string name="toast_delete_error">There was a problem while deleting the selected file</string>
+    <string name="toast_prune">Old file(s) deleted successfully</string>
+    <string name="toast_prune_error">There was a problem deleting one or more old files</string>
+    <string name="toast_no_updates">There are no updates at this time</string>
+    <string name="toast_fetch_error">There was an error fetching OTA information</string>
+    <string name="toast_download_error">The download was interrupted!</string>
+    
+    <string name="prefs_title">Settings</string>
+    <string name="prefs_notif_title">Notification Settings</string>
+    <string name="prefs_about_title">About</string>
+    <string name="pref_notif_title">Show update notifications</string>
+    <string name="pref_notif_summary">Show update notifications for new versions of your current ROM.</string>
+    <string name="pref_delete_title">Delete old files</string>
+    <string name="pref_delete_summary">Delete ROMs that are over a month old.</string>
+    <string name="pref_interval_title">Update check interval</string>
+    <string name="pref_led_title">Pulse LED for notifications</string>
+    <string name="pref_led_summary">Pulse the LED light for update notifications. Note: This will only work for devices which have an LED.</string>
+    <string name="pref_vibrate_title">Vibrate for update notifications</string>
+    <string name="pref_vibrate_summary">Vibrate for incoming update notifications</string>
+    <string name="pref_version_title">Version</string>
+    <string name="pref_version_unknown">Unkown Version (error in package manager)</string>
+    <string name="pref_update_title">Check for updates</string>
+    <string name="pref_update_summary">Check for application updates</string>
 
 </resources>

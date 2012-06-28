@@ -8,6 +8,7 @@
     
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.REBOOT"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -26,29 +27,19 @@
             </intent-filter>
         </activity>
         
-		<receiver android:name=".checkInBackground">
+		<receiver android:name=".UpdateCheckReceiver">
 			<intent-filter>
 				<action android:name="android.intent.action.BOOT_COMPLETED"></action>
 			</intent-filter>
 		</receiver>
         
         <activity
-            android:name=".getfiles"
-            android:label="@string/app_name">
-        </activity>
-        
-        <activity 
-            android:name=".about"
+            android:name=".ListFilesActivity"
             android:label="@string/app_name">
         </activity>
         
         <activity
-            android:name=".villainsettings"
-            android:label="@string/app_name">
-        </activity>
-        
-        <activity
-            android:name=".deleteFiles"
+            android:name=".UpdaterSettings"
             android:label="@string/app_name">
         </activity>
         

@@ -2,64 +2,56 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="Settings">
+        android:title="@string/prefs_title">
 
         <CheckBoxPreference
-            android:title="Show update notifications"
+            android:title="@string/pref_notif_title"
+            android:summary="@string/pref_notif_summary"
             android:defaultValue="false"
-            android:summary="Show update notifications for new versions of your current ROM."
-            android:key="update_notify" />
+            android:key="pref_notif" />
 
         <CheckBoxPreference
-            android:title="Delete old files"
+            android:title="@string/pref_delete_title"
+            android:summary="@string/pref_delete_summary"
             android:defaultValue="false"
-            android:summary="Delete ROMs that are over a month old."
-            android:key="clean_up" />
+            android:key="pref_delete" />
 
-        <CheckBoxPreference
-            android:title="Show device information"
-            android:defaultValue="true"
-            android:summary="Show the device information on application start-up"
-            android:key="info_show" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="prefs_notif_title">
 
         <ListPreference
-            android:title="Update check interval"
-            android:summary="How often the application should check for updates."
-            android:key="list_interval"
-            android:entries="@array/list_update_interval_Array"
-            android:entryValues="@array/list_update_interval_Values"/>
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="Notification Settings">
+            android:title="@string/pref_interval_title"
+            android:key="pref_interval"
+            android:entries="@array/list_update_interval_array"
+            android:entryValues="@array/list_update_interval_values" />
 
         <CheckBoxPreference
-            android:title="Pulse LED for notifications"
-            android:summary="Pulse the LED light for update notifications. Note: This will only work for devices which have an LED."
+            android:title="@string/pref_led_title"
+            android:summary="@string/pref_led_summary"
             android:defaultValue="true"
-            android:key="pulse_light"/>
+            android:key="pref_led" />
 
         <CheckBoxPreference
-            android:title="Vibrate for update notifications"
-            android:summary="Vibrate for incoming update notifications"
+            android:title="@string/pref_vibrate_title"
+            android:summary="@string/pref_vibrate_summary"
             android:defaultValue="false"
-            android:key="vibrate_notify"/>
+            android:key="pref_vibrate" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="About">
+        android:title="@string/prefs_about_title">
 
         <Preference
-            android:title="Version"
-            android:summary="1.0.0"
-            android:key="tv_version" />
+            android:title="@string/pref_version_title"
+            android:key="pref_version" />
 
         <Preference
-            android:title="Check for updates"
-            android:summary="Check for application updates"
-            android:key="tv_check_update"/>
+            android:title="@string/pref_update_title"
+            android:summary="@string/pref_update_summary"
+            android:key="pref_update" />
 
     </PreferenceCategory>
 
