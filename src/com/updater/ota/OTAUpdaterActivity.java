@@ -47,6 +47,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gcm.GCMRegistrar;
 import com.updater.ota.FetchRomInfoTask.RomInfoListener;
 
 public class OTAUpdaterActivity extends PreferenceActivity {
@@ -73,6 +74,15 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 				}
 			});
         	alert.create().show();
+        }
+
+        GCMRegistrar.checkDevice(this);
+        GCMRegistrar.checkManifest(this);
+        final String regId = GCMRegistrar.getRegistrationId(this);
+        if (regId.equals("")) {
+            GCMRegistrar.register(this, "1068482628480");
+        } else {
+            Log.v("OTAUpdater::GCMRegiser", "Already registered");
         }
 
         addPreferencesFromResource(R.xml.main);
