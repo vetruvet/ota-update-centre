@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.util.Log;
 
 
 public class FetchRomInfoTask extends AsyncTask<Void, Void, RomInfo> {
@@ -76,7 +77,16 @@ public class FetchRomInfoTask extends AsyncTask<Void, Void, RomInfo> {
                 String data = EntityUtils.toString(e);
                 JSONObject json = new JSONObject(data);
 
-                return new RomInfo(json.getString("version"), json.getString("changelog"), json.getString("url"), json.getString("rom"));
+                if (json.has("error")) {
+                	Log.e("OTA::Fetch", json.getString("error"));
+                	return null;
+                }
+
+                return new RomInfo(
+                		json.getString("version"),
+                		json.getString("changelog"),
+                		json.getString("url"),
+                		json.getString("rom"));
             } else {
                 if (e != null) e.consumeContent();
                 return null;
