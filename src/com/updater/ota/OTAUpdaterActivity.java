@@ -51,7 +51,7 @@ import com.google.android.gcm.GCMRegistrar;
 import com.updater.ota.FetchRomInfoTask.RomInfoListener;
 
 public class OTAUpdaterActivity extends PreferenceActivity {
-    protected static final String Display = null;
+    protected static final String NOTIF_ACTION = "com.updater.ota.action.NOTIF_ACTION";
 
     private boolean checkOnResume = false;
 
@@ -83,6 +83,11 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             GCMRegistrar.register(this, "1068482628480");
         } else {
             Log.v("OTAUpdater::GCMRegiser", "Already registered");
+        }
+
+        Intent i = getIntent();
+        if (i.getAction().equals(NOTIF_ACTION)) {
+        	showUpdateDialog(RomInfo.fromIntent(i));
         }
 
         addPreferencesFromResource(R.xml.main);
@@ -184,120 +189,124 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             @Override
             public void onStartLoading() { }
             @Override
-            @SuppressWarnings("deprecation")
-			public void onLoaded(final RomInfo info) {
+			public void onLoaded(RomInfo info) {
                 String buildVersion = android.os.Build.ID;
                 if (info == null) {
                 	Toast.makeText(OTAUpdaterActivity.this, R.string.toast_fetch_error, Toast.LENGTH_SHORT).show();
                 } else if (info.mRom != null && info.mRom.length() != 0 && !buildVersion.equals(info.mRom)) {
-                    AlertDialog.Builder alert = new AlertDialog.Builder(OTAUpdaterActivity.this);
-                    alert.setTitle(R.string.alert_update_title);
-                    //TODO redo this...
-                    alert.setMessage("Changelog: " + info.mChange);
-                    final Preference build = findPreference("avail_updates");
-                    build.setSummary("New updates: " + info.mRom);
-
-                    alert.setPositiveButton(R.string.alert_download, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                        	dialog.dismiss();
-
-                        	final File file = new File(ListFilesActivity.DL_PATH + "_" + info.mBuild + "_"  + info.mRom + ".zip");
-
-                        	final ProgressDialog progressDialog = new ProgressDialog(OTAUpdaterActivity.this);
-                        	progressDialog.setTitle(R.string.alert_downloading);
-                            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                            progressDialog.setCancelable(true);
-                            progressDialog.setProgress(0);
-
-                            new AsyncTask<Void, Integer, Boolean>() {
-								@Override
-								protected void onPreExecute() {
-									progressDialog.show();
-								}
-
-								@Override
-								protected Boolean doInBackground(Void... params) {
-									try {
-                                        URL getUrl = new URL(info.mUrl);
-                                        long startTime = System.currentTimeMillis();
-                                        Log.d("Download Manager", "download beginning: " + startTime);
-                                        Log.d("Download Manager", "download url: " + getUrl);
-                                        Log.d("Download Manager", "file name: " + file);
-
-                                        URLConnection conn = getUrl.openConnection();
-                                        final int lengthOfFile = conn.getContentLength();
-                                        publishProgress(0, lengthOfFile);
-
-                                        conn.connect();
-                                        InputStream is = new BufferedInputStream(getUrl.openStream());
-                                        OutputStream os = new FileOutputStream(file);
-
-                                        byte[] data = new byte[4096];
-                                        int nRead = -1;
-                                        int totalRead = 0;
-                                        while ((nRead = is.read(data)) != -1) {
-                                        	if (this.isCancelled()) break;
-                                            os.write(data, 0, nRead);
-                                            totalRead += nRead;
-                                            publishProgress(totalRead);
-                                        }
-
-                                        os.flush();
-                                        os.close();
-                                        is.close();
-
-                                        if (isCancelled()) {
-                                        	file.delete();
-                                        	return false;
-                                        }
-
-                                        long finishTime = System.currentTimeMillis();
-                                        Log.d("Download Manager", "download finished: " + finishTime);
-                                        return true;
-                                    } catch (ClientProtocolException e) {
-                                        e.printStackTrace();
-                                        file.delete();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                        file.delete();
-                                    }
-                                    return false;
-								}
-
-								@Override
-								protected void onPostExecute(Boolean result) {
-									progressDialog.dismiss();
-									if (!result) {
-										Toast.makeText(OTAUpdaterActivity.this, R.string.toast_download_error, Toast.LENGTH_SHORT).show();
-									} else {
-										ListFilesActivity.installFileDialog(OTAUpdaterActivity.this, file);
-									}
-								}
-
-								@Override
-								protected void onProgressUpdate(Integer... values) {
-									if (values.length == 0) return;
-                                    progressDialog.setProgress(values[0] / 1048576);
-                                    if (values.length == 1) return;
-                                    progressDialog.setMax(values[1] / 1048576);
-								}
-							}.execute();
-                        }
-                    });
-
-                    alert.setNegativeButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    alert.create().show();
+                    showUpdateDialog(info);
                 } else {
                     Toast.makeText(OTAUpdaterActivity.this, R.string.toast_no_updates, Toast.LENGTH_SHORT).show();
                 }
             }
         }).execute();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void showUpdateDialog(final RomInfo info) {
+    	AlertDialog.Builder alert = new AlertDialog.Builder(OTAUpdaterActivity.this);
+        alert.setTitle(R.string.alert_update_title);
+        //TODO redo this...
+        alert.setMessage("Changelog: " + info.mChange);
+        final Preference build = findPreference("avail_updates");
+        build.setSummary("New updates: " + info.mRom);
+
+        alert.setPositiveButton(R.string.alert_download, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+            	dialog.dismiss();
+
+            	final File file = new File(ListFilesActivity.DL_PATH + "_" + info.mBuild + "_"  + info.mRom + ".zip");
+
+            	final ProgressDialog progressDialog = new ProgressDialog(OTAUpdaterActivity.this);
+            	progressDialog.setTitle(R.string.alert_downloading);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progressDialog.setCancelable(true);
+                progressDialog.setProgress(0);
+
+                new AsyncTask<Void, Integer, Boolean>() {
+					@Override
+					protected void onPreExecute() {
+						progressDialog.show();
+					}
+
+					@Override
+					protected Boolean doInBackground(Void... params) {
+						try {
+                            URL getUrl = new URL(info.mUrl);
+                            long startTime = System.currentTimeMillis();
+                            Log.d("Download Manager", "download beginning: " + startTime);
+                            Log.d("Download Manager", "download url: " + getUrl);
+                            Log.d("Download Manager", "file name: " + file);
+
+                            URLConnection conn = getUrl.openConnection();
+                            final int lengthOfFile = conn.getContentLength();
+                            publishProgress(0, lengthOfFile);
+
+                            conn.connect();
+                            InputStream is = new BufferedInputStream(getUrl.openStream());
+                            OutputStream os = new FileOutputStream(file);
+
+                            byte[] data = new byte[4096];
+                            int nRead = -1;
+                            int totalRead = 0;
+                            while ((nRead = is.read(data)) != -1) {
+                            	if (this.isCancelled()) break;
+                                os.write(data, 0, nRead);
+                                totalRead += nRead;
+                                publishProgress(totalRead);
+                            }
+
+                            os.flush();
+                            os.close();
+                            is.close();
+
+                            if (isCancelled()) {
+                            	file.delete();
+                            	return false;
+                            }
+
+                            long finishTime = System.currentTimeMillis();
+                            Log.d("Download Manager", "download finished: " + finishTime);
+                            return true;
+                        } catch (ClientProtocolException e) {
+                            e.printStackTrace();
+                            file.delete();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            file.delete();
+                        }
+                        return false;
+					}
+
+					@Override
+					protected void onPostExecute(Boolean result) {
+						progressDialog.dismiss();
+						if (!result) {
+							Toast.makeText(OTAUpdaterActivity.this, R.string.toast_download_error, Toast.LENGTH_SHORT).show();
+						} else {
+							ListFilesActivity.installFileDialog(OTAUpdaterActivity.this, file);
+						}
+					}
+
+					@Override
+					protected void onProgressUpdate(Integer... values) {
+						if (values.length == 0) return;
+                        progressDialog.setProgress(values[0] / 1048576);
+                        if (values.length == 1) return;
+                        progressDialog.setMax(values[1] / 1048576);
+					}
+				}.execute();
+            }
+        });
+
+        alert.setNegativeButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.create().show();
     }
 
     private void pruneFiles() {

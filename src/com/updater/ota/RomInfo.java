@@ -16,6 +16,8 @@
 
 package com.updater.ota;
 
+import android.content.Intent;
+
 public class RomInfo {
     public String mRom;
     public String mChange;
@@ -27,5 +29,20 @@ public class RomInfo {
         mChange = changelog;
         mUrl = downurl;
         mBuild = build;
+    }
+
+    public static RomInfo fromIntent(Intent i) {
+    	return new RomInfo(
+    			i.getStringExtra("info_rom"),
+    			i.getStringExtra("info_changelog"),
+    			i.getStringExtra("info_url"),
+    			i.getStringExtra("info_build"));
+    }
+
+    public void addToIntent(Intent i) {
+    	i.putExtra("info_rom", mRom);
+    	i.putExtra("info_changelog", mChange);
+    	i.putExtra("info_url", mUrl);
+    	i.putExtra("info_build", mBuild);
     }
 }
