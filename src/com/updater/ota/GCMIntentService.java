@@ -42,7 +42,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	@Override
 	protected void onError(Context ctx, String errorID) {
-		Log.e("OTA::GCM", errorID);
+		Log.e("OTAUpdater::GCM", errorID);
 	}
 
 	@Override
@@ -69,6 +69,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	@Override
 	protected void onRegistered(Context ctx, String regID) {
+	    Log.v("OTAUpdater::GCMRegister", "GCM registered - ID=" + regID);
 		ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
 		params.add(new BasicNameValuePair("do", "register"));
 		params.add(new BasicNameValuePair("reg_id", regID));
@@ -90,6 +91,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	@Override
 	protected void onUnregistered(Context ctx, String regID) {
+        Log.v("OTAUpdater::GCMRegister", "GCM unregistered - ID=" + regID);
 		ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
 		params.add(new BasicNameValuePair("do", "unregister"));
 		params.add(new BasicNameValuePair("reg_id", regID));

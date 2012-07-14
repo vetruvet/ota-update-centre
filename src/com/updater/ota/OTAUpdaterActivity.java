@@ -81,8 +81,9 @@ public class OTAUpdaterActivity extends PreferenceActivity {
         final String regId = GCMRegistrar.getRegistrationId(this);
         if (regId.equals("")) {
             GCMRegistrar.register(this, "1068482628480");
+            Log.v("OTAUpdater::GCMRegister", "GCM registered");
         } else {
-            Log.v("OTAUpdater::GCMRegiser", "Already registered");
+            Log.v("OTAUpdater::GCMRegister", "Already registered");
         }
 
         Intent i = getIntent();
