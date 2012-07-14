@@ -63,6 +63,7 @@ public class FetchRomInfoTask extends AsyncTask<Void, Void, RomInfo> {
         try {
             String device = android.os.Build.DEVICE.toLowerCase();
             String romID = System.getProperty(OTA_ID_PROP);
+            if (romID == null) return null;
 
             ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
             params.add(new BasicNameValuePair("device", device));
