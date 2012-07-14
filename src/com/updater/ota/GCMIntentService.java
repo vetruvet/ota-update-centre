@@ -36,7 +36,7 @@ import com.google.android.gcm.GCMBaseIntentService;
 
 public class GCMIntentService extends GCMBaseIntentService {
 
-	protected GCMIntentService() {
+	public GCMIntentService() {
 		super("1068482628480");
 	}
 
