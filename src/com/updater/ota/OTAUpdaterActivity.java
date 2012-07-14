@@ -74,16 +74,16 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 				}
 			});
         	alert.create().show();
-        }
-
-        GCMRegistrar.checkDevice(this);
-        GCMRegistrar.checkManifest(this);
-        final String regId = GCMRegistrar.getRegistrationId(this);
-        if (regId.equals("")) {
-            GCMRegistrar.register(this, "1068482628480");
-            Log.v("OTAUpdater::GCMRegister", "GCM registered");
         } else {
-            Log.v("OTAUpdater::GCMRegister", "Already registered");
+            GCMRegistrar.checkDevice(this);
+            GCMRegistrar.checkManifest(this);
+            final String regId = GCMRegistrar.getRegistrationId(this);
+            if (regId.equals("")) {
+                GCMRegistrar.register(this, "1068482628480");
+                Log.v("OTAUpdater::GCMRegister", "GCM registered");
+            } else {
+                Log.v("OTAUpdater::GCMRegister", "Already registered");
+            }
         }
 
         Intent i = getIntent();
