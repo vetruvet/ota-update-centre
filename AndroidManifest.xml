@@ -24,7 +24,7 @@
         android:hardwareAccelerated="true">
         
         <activity
-            android:name=".VillainUpdater"
+            android:name=".OTAUpdaterActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
