@@ -29,15 +29,17 @@ public class UpdateCheckReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(final Context context, Intent intent) {
-	    GCMRegistrar.checkDevice(context.getApplicationContext());
-        GCMRegistrar.checkManifest(context.getApplicationContext());
-        final String regId = GCMRegistrar.getRegistrationId(context.getApplicationContext());
-        if (regId.equals("")) {
-            GCMRegistrar.register(context.getApplicationContext(), "1068482628480");
-            Log.v("OTAUpdater::GCMRegister", "GCM registered");
-        } else {
-            Log.v("OTAUpdater::GCMRegister", "Already registered");
-        }
+	    if (System.getProperty(FetchRomInfoTask.OTA_ID_PROP) != null) {
+    	    GCMRegistrar.checkDevice(context.getApplicationContext());
+            GCMRegistrar.checkManifest(context.getApplicationContext());
+            final String regId = GCMRegistrar.getRegistrationId(context.getApplicationContext());
+            if (regId.equals("")) {
+                GCMRegistrar.register(context.getApplicationContext(), "1068482628480");
+                Log.v("OTAUpdater::GCMRegister", "GCM registered");
+            } else {
+                Log.v("OTAUpdater::GCMRegister", "Already registered");
+            }
+	    }
 //        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
 //            setAlarm(context);
 //        }
