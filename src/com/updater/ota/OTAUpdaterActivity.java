@@ -75,11 +75,11 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 			});
         	alert.create().show();
         } else {
-            GCMRegistrar.checkDevice(this);
-            GCMRegistrar.checkManifest(this);
-            final String regId = GCMRegistrar.getRegistrationId(this);
+            GCMRegistrar.checkDevice(getApplicationContext());
+            GCMRegistrar.checkManifest(getApplicationContext());
+            final String regId = GCMRegistrar.getRegistrationId(getApplicationContext());
             if (regId.equals("")) {
-                GCMRegistrar.register(this, "1068482628480");
+                GCMRegistrar.register(getApplicationContext(), "1068482628480");
                 Log.v("OTAUpdater::GCMRegister", "GCM registered");
             } else {
                 Log.v("OTAUpdater::GCMRegister", "Already registered");
@@ -98,7 +98,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             pruneFiles();
         }
 
-        UpdateCheckReceiver.setAlarm(getApplicationContext());
+//        UpdateCheckReceiver.setAlarm(getApplicationContext());
         checkOnResume = true;
 
         String buildDevice = android.os.Build.DEVICE.toLowerCase();
