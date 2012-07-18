@@ -32,14 +32,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -61,7 +59,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (System.getProperty(FetchRomInfoTask.OTA_ID_PROP) == null) {
+        if (!Utils.isROMSupported()) {
         	AlertDialog.Builder alert = new AlertDialog.Builder(this);
         	alert.setTitle(R.string.alert_unsupported_title);
         	alert.setMessage(R.string.alert_unsupported_message);
@@ -74,47 +72,47 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 				}
 			});
         	alert.create().show();
-        } else {
-            GCMRegistrar.checkDevice(getApplicationContext());
-            GCMRegistrar.checkManifest(getApplicationContext());
-            final String regId = GCMRegistrar.getRegistrationId(getApplicationContext());
-            if (regId.equals("")) {
-                GCMRegistrar.register(getApplicationContext(), "1068482628480");
-                Log.v("OTAUpdater::GCMRegister", "GCM registered");
+        } else { 
+            if (Utils.marketAvailable(this)) {
+                GCMRegistrar.checkDevice(getApplicationContext());
+                GCMRegistrar.checkManifest(getApplicationContext());
+                final String regId = GCMRegistrar.getRegistrationId(getApplicationContext());
+                if (regId.equals("")) {
+                    GCMRegistrar.register(getApplicationContext(), "1068482628480");
+                    Log.v("OTAUpdater::GCMRegister", "GCM registered");
+                } else {
+                    Log.v("OTAUpdater::GCMRegister", "Already registered");
+                }
             } else {
-                Log.v("OTAUpdater::GCMRegister", "Already registered");
+                BootReceiver.setAlarm(getApplicationContext());
+                checkOnResume = true;
             }
+    
+            Intent i = getIntent();
+            if (i.getAction().equals(NOTIF_ACTION)) {
+            	showUpdateDialog(RomInfo.fromIntent(i));
+            }
+    
+            addPreferencesFromResource(R.xml.main);
+    
+            if (Config.getInstance(getApplicationContext()).getPruneFiles()) {
+                pruneFiles();
+            }
+    
+            String buildDevice = android.os.Build.DEVICE.toLowerCase();
+            String buildVer = android.os.Build.ID;
+            String buildRom = android.os.Build.DISPLAY;
+            String buildPrint = android.os.Build.FINGERPRINT;
+    
+            final Preference device = findPreference("device_view");
+            device.setSummary(buildDevice);
+            final Preference rom = findPreference("rom_view");
+            rom.setSummary(buildRom);
+            final Preference version = findPreference("version_view");
+            version.setSummary(buildVer);
+            final Preference build = findPreference("build_view");
+            build.setSummary(buildPrint);
         }
-
-        Intent i = getIntent();
-        if (i.getAction().equals(NOTIF_ACTION)) {
-        	showUpdateDialog(RomInfo.fromIntent(i));
-        }
-
-        addPreferencesFromResource(R.xml.main);
-
-        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if (sp.getBoolean("clean_up", false)) {
-            pruneFiles();
-        }
-
-//        UpdateCheckReceiver.setAlarm(getApplicationContext());
-        checkOnResume = true;
-
-        String buildDevice = android.os.Build.DEVICE.toLowerCase();
-        String buildVer = android.os.Build.ID;
-        String buildRom = android.os.Build.DISPLAY;
-        String buildPrint = android.os.Build.FINGERPRINT;
-        //final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-        final Preference device = findPreference("device_view");
-        device.setSummary(buildDevice);
-        final Preference rom = findPreference("rom_view");
-        rom.setSummary(buildRom);
-        final Preference version = findPreference("version_view");
-        version.setSummary(buildVer);
-        final Preference build = findPreference("build_view");
-        build.setSummary(buildPrint);
     }
 
     @Override
@@ -199,6 +197,10 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                 } else {
                     Toast.makeText(OTAUpdaterActivity.this, R.string.toast_no_updates, Toast.LENGTH_SHORT).show();
                 }
+            }
+            @Override
+            public void onError(String error) {
+                Toast.makeText(OTAUpdaterActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         }).execute();
     }
