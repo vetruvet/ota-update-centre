@@ -23,12 +23,14 @@ public class RomInfo {
     public String mChange;
     public String mUrl;
     public String mBuild;
+    public String md5;
 
-    public RomInfo(String rom, String changelog, String downurl, String build) {
+    public RomInfo(String rom, String changelog, String downurl, String build, String md5) {
         mRom = rom;
         mChange = changelog;
         mUrl = downurl;
         mBuild = build;
+        this.md5 = md5;
     }
 
     public static RomInfo fromIntent(Intent i) {
@@ -36,7 +38,8 @@ public class RomInfo {
     			i.getStringExtra("info_rom"),
     			i.getStringExtra("info_changelog"),
     			i.getStringExtra("info_url"),
-    			i.getStringExtra("info_build"));
+    			i.getStringExtra("info_build"),
+    			i.getStringExtra("info_md5"));
     }
 
     public void addToIntent(Intent i) {
@@ -44,5 +47,6 @@ public class RomInfo {
     	i.putExtra("info_changelog", mChange);
     	i.putExtra("info_url", mUrl);
     	i.putExtra("info_build", mBuild);
+    	i.putExtra("info_md5", md5);
     }
 }
