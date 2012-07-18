@@ -29,17 +29,13 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
-
 public class FetchRomInfoTask extends AsyncTask<Void, Void, RomInfo> {
-    public static final String ROM_UPDATE_URL = "http://sensation-devs.org/romupdater2/pages/romupdate.php";
-    public static final String OTA_ID_PROP = "otaupdater.otaid";
-
     private RomInfoListener callback = null;
     private Context context = null;
+    private String error = null;
 
     public FetchRomInfoTask(Context ctx) {
     	this(ctx, null);
@@ -57,20 +53,22 @@ public class FetchRomInfoTask extends AsyncTask<Void, Void, RomInfo> {
 
     @Override
     protected RomInfo doInBackground(Void... notused) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (!cm.getActiveNetworkInfo().isConnected()) return null;
+        if (!Utils.isROMSupported()) {
+            error = context.getString(R.string.alert_unsupported_title);
+            return null;
+        }
+        if (!Utils.dataAvailable(context)) {
+            error = context.getString(R.string.alert_nodata_title);
+            return null;
+        }
 
         try {
-            String device = android.os.Build.DEVICE.toLowerCase();
-            String romID = System.getProperty(OTA_ID_PROP);
-            if (romID == null) return null;
-
             ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
-            params.add(new BasicNameValuePair("device", device));
-            params.add(new BasicNameValuePair("rom", romID));
+            params.add(new BasicNameValuePair("device", android.os.Build.DEVICE.toLowerCase()));
+            params.add(new BasicNameValuePair("rom", System.getProperty(Config.OTA_ID_PROP)));
 
             HttpClient client = new DefaultHttpClient();
-            HttpGet get = new HttpGet(ROM_UPDATE_URL + "?" + URLEncodedUtils.format(params, "UTF-8"));
+            HttpGet get = new HttpGet(Config.PULL_URL + "?" + URLEncodedUtils.format(params, "UTF-8"));
             HttpResponse r = client.execute(get);
             int status = r.getStatusLine().getStatusCode();
             HttpEntity e = r.getEntity();
@@ -80,20 +78,24 @@ public class FetchRomInfoTask extends AsyncTask<Void, Void, RomInfo> {
 
                 if (json.has("error")) {
                 	Log.e("OTA::Fetch", json.getString("error"));
+                	error = json.getString("error");
                 	return null;
                 }
 
                 return new RomInfo(
-                		json.getString("version"),
-                		json.getString("changelog"),
-                		json.getString("url"),
-                		json.getString("rom"));
+                        json.getString("rom"),
+                        json.getString("changelog"),
+                        json.getString("url"),
+                		json.getString("build-fingerprint"),
+                		json.getString("md5"));
             } else {
                 if (e != null) e.consumeContent();
+                error = "Server responded with error " + status;
                 return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            error = e.getMessage();
         }
 
         return null;
@@ -101,11 +103,15 @@ public class FetchRomInfoTask extends AsyncTask<Void, Void, RomInfo> {
 
     @Override
     public void onPostExecute(RomInfo result) {
-        if (callback != null) callback.onLoaded(result);
+        if (callback != null) {
+            if (result == null) callback.onLoaded(result);
+            else callback.onError(error);
+        }
     }
 
     public static interface RomInfoListener {
         void onStartLoading();
         void onLoaded(RomInfo info);
+        void onError(String err);
     }
 }
