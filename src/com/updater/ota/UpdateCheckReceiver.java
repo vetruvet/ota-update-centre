@@ -17,65 +17,78 @@
 package com.updater.ota;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
 import com.google.android.gcm.GCMRegistrar;
+import com.updater.ota.FetchRomInfoTask.RomInfoListener;
 
 public class UpdateCheckReceiver extends BroadcastReceiver {
-
 	@Override
 	public void onReceive(final Context context, Intent intent) {
-	    if (System.getProperty(FetchRomInfoTask.OTA_ID_PROP) != null) {
-    	    GCMRegistrar.checkDevice(context.getApplicationContext());
-            GCMRegistrar.checkManifest(context.getApplicationContext());
-            final String regId = GCMRegistrar.getRegistrationId(context.getApplicationContext());
-            if (regId.equals("")) {
-                GCMRegistrar.register(context.getApplicationContext(), "1068482628480");
-                Log.v("OTAUpdater::GCMRegister", "GCM registered");
-            } else {
-                Log.v("OTAUpdater::GCMRegister", "Already registered");
-            }
+	    if (System.getProperty(Config.OTA_ID_PROP) != null) {
+	        if (Utils.marketAvailable(context)) {
+        	    GCMRegistrar.checkDevice(context.getApplicationContext());
+                GCMRegistrar.checkManifest(context.getApplicationContext());
+                final String regId = GCMRegistrar.getRegistrationId(context.getApplicationContext());
+                if (regId.equals("")) {
+                    GCMRegistrar.register(context.getApplicationContext(), Config.GCM_SENDER_ID);
+                    Log.v("OTAUpdater::GCM", "GCM registered");
+                } else {
+                    Log.v("OTAUpdater::GCM", "Already registered");
+                }
+	        } else {
+	            if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
+	                setAlarm(context);
+	            }
+
+	            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+	            final WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, UpdateCheckReceiver.class.getName());
+	            wl.acquire();
+
+	            new FetchRomInfoTask(context, new RomInfoListener() {
+	                @Override
+	                public void onStartLoading() { }
+	                @Override
+	                public void onLoaded(RomInfo info) {
+	                    boolean available = false;
+	                    String buildVersion = android.os.Build.ID;
+	                    if (info != null && info.mRom != null && !info.mRom.isEmpty() && !buildVersion.equals(info.mRom)) {
+	                        available = true;
+	                    }
+
+	                    if (available) {
+	                        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+	                        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, new Intent(), 0);
+
+	                        Notification.Builder builder = new Notification.Builder(context);
+	                        builder.setContentIntent(contentIntent);
+	                        builder.setContentTitle(context.getString(R.string.notif_source));
+	                        builder.setContentText(context.getString(R.string.notif_text_rom));
+	                        builder.setTicker(context.getString(R.string.notif_text_rom));
+	                        builder.setWhen(System.currentTimeMillis());
+	                        builder.setSmallIcon(R.drawable.updates);
+	                        nm.notify(1, builder.getNotification());
+	                    }
+
+	                    wl.release();
+	                }
+	                @Override
+	                public void onError(String error) {
+	                    wl.release();
+	                }
+	            }).execute();
+	        }
+	    } else {
+	        Log.w("OTAUpdater", "Unsupported ROM");
 	    }
-//        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-//            setAlarm(context);
-//        }
-//
-//        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-//        final WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, this.getClass().getName());
-//        wl.acquire();
-//
-//        new FetchRomInfoTask(context, new RomInfoListener() {
-//            @Override
-//            public void onStartLoading() { }
-//            @Override
-//            public void onLoaded(RomInfo info) {
-//                boolean available = false;
-//                String buildVersion = android.os.Build.ID;
-//                if (info != null && info.mRom != null && !info.mRom.isEmpty() && !buildVersion.equals(info.mRom)) {
-//                    available = true;
-//                }
-//
-//                if (available) {
-//                    NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//                    PendingIntent contentIntent = PendingIntent.getActivity(context, 0, new Intent(), 0);
-//
-//                    Notification.Builder builder = new Notification.Builder(context);
-//                    builder.setContentIntent(contentIntent);
-//                    builder.setContentTitle(context.getString(R.string.notif_source));
-//                    builder.setContentText(context.getString(R.string.notif_text_rom));
-//                    builder.setTicker(context.getString(R.string.notif_text_rom));
-//                    builder.setWhen(System.currentTimeMillis());
-//                    builder.setSmallIcon(R.drawable.updates);
-//                    nm.notify(1, builder.getNotification());
-//                }
-//
-//                wl.release();
-//            }
-//        }).execute();
 	}
 
     protected static void setAlarm(Context ctx) {

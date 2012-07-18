@@ -84,7 +84,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                     Log.v("OTAUpdater::GCMRegister", "Already registered");
                 }
             } else {
-                BootReceiver.setAlarm(getApplicationContext());
+                UpdateCheckReceiver.setAlarm(getApplicationContext());
                 checkOnResume = true;
             }
     
