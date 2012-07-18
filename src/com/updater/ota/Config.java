@@ -17,6 +17,8 @@ public class Config {
     private String curDevice = null;
     private String curRomID = null;
     
+    private boolean pruneFiles = false;
+    
     private static final String PREFS_NAME = "prefs";
     private final SharedPreferences PREFS;
     
@@ -26,6 +28,7 @@ public class Config {
         lastVersion = PREFS.getInt("version", lastVersion);
         lastDevice = PREFS.getString("device", lastDevice);
         lastRomID = PREFS.getString("romid", lastRomID);
+        pruneFiles = PREFS.getBoolean("prune", pruneFiles);
         
         try {
             curVersion = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
@@ -64,5 +67,19 @@ public class Config {
     
     public boolean upToDate() {
         return curVersion == lastVersion && curDevice.equals(lastDevice) && curRomID.equals(lastRomID);
+    }
+    
+    public boolean getPruneFiles() {
+        return pruneFiles;
+    }
+    
+    public void setPruneFiles(boolean pruneFiles) {
+        this.pruneFiles = pruneFiles;
+        
+        synchronized (PREFS) {
+            SharedPreferences.Editor editor = PREFS.edit();
+            editor.putBoolean("prune", pruneFiles);
+            editor.commit();
+        }
     }
 }
