@@ -6,6 +6,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 
 public class Config {
     public static final String GCM_SENDER_ID = "1068482628480";
+    public static final String GCM_REGISTER_URL = "http://sensation-devs.org/romupdater2/pages/regdevice.php";
     public static final String PULL_URL = "http://sensation-devs.org/romupdater2/pages/romupdate.php";
     public static final String OTA_ID_PROP = "otaupdater.otaid";
     

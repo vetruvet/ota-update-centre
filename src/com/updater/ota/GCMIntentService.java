@@ -37,7 +37,7 @@ import com.google.android.gcm.GCMBaseIntentService;
 public class GCMIntentService extends GCMBaseIntentService {
 
 	public GCMIntentService() {
-		super("1068482628480");
+		super(Config.GCM_SENDER_ID);
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		try {
 			HttpClient http = new DefaultHttpClient();
-			HttpPost req = new HttpPost("http://sensation-devs.org/romupdater2/pages/regdevice.php");
+			HttpPost req = new HttpPost(Config.GCM_REGISTER_URL);
 			req.setEntity(new UrlEncodedFormEntity(params));
 			HttpResponse resp = http.execute(req);
 			if (resp.getStatusLine().getStatusCode() != 200) {
@@ -98,7 +98,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		try {
 			HttpClient http = new DefaultHttpClient();
-			HttpPost req = new HttpPost("http://sensation-devs.org/romupdater2/pages/regdevice.php");
+			HttpPost req = new HttpPost(Config.GCM_REGISTER_URL);
 			req.setEntity(new UrlEncodedFormEntity(params));
 			HttpResponse resp = http.execute(req);
 			if (resp.getStatusLine().getStatusCode() != 200) {
