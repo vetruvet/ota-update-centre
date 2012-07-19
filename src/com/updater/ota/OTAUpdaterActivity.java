@@ -52,6 +52,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
     protected static final String NOTIF_ACTION = "com.updater.ota.action.NOTIF_ACTION";
 
     private boolean checkOnResume = false;
+    private Config cfg;
 
     /** Called when the activity is first created. */
     @Override
@@ -59,6 +60,8 @@ public class OTAUpdaterActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        cfg = Config.getInstance(getApplicationContext());
+        
         if (!Utils.isROMSupported()) {
         	AlertDialog.Builder alert = new AlertDialog.Builder(this);
         	alert.setTitle(R.string.alert_unsupported_title);
@@ -77,23 +80,31 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                 GCMRegistrar.checkDevice(getApplicationContext());
                 GCMRegistrar.checkManifest(getApplicationContext());
                 final String regId = GCMRegistrar.getRegistrationId(getApplicationContext());
-                if (regId.equals("")) {
-                    GCMRegistrar.register(getApplicationContext(), "1068482628480");
-                    Log.v("OTAUpdater::GCMRegister", "GCM registered");
+                if (regId.length() != 0) {
+                    if (cfg.upToDate()) {
+                        Log.v("OTAUpdater::GCMRegister", "Already registered");
+                    } else {
+                        Log.v("OTAUpdater::GCMRegister", "Already registered, out-of-date, reregistering");
+                        GCMRegistrar.unregister(getApplicationContext());
+                        GCMRegistrar.register(getApplicationContext(), Config.GCM_SENDER_ID);
+                        cfg.setValuesToCurrent();
+                        Log.v("OTAUpdater::GCMRegister", "GCM registered");
+                    }
                 } else {
-                    Log.v("OTAUpdater::GCMRegister", "Already registered");
+                    GCMRegistrar.register(getApplicationContext(), Config.GCM_SENDER_ID);
+                    Log.v("OTAUpdater::GCMRegister", "GCM registered");
                 }
             } else {
                 UpdateCheckReceiver.setAlarm(getApplicationContext());
                 checkOnResume = true;
             }
-    
+
+            addPreferencesFromResource(R.xml.main);
+            
             Intent i = getIntent();
             if (i.getAction().equals(NOTIF_ACTION)) {
             	showUpdateDialog(RomInfo.fromIntent(i));
             }
-    
-            addPreferencesFromResource(R.xml.main);
     
             if (Config.getInstance(getApplicationContext()).getPruneFiles()) {
                 pruneFiles();
