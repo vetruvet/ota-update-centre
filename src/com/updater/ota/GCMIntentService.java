@@ -74,7 +74,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		params.add(new BasicNameValuePair("do", "register"));
 		params.add(new BasicNameValuePair("reg_id", regID));
 		params.add(new BasicNameValuePair("device", android.os.Build.DEVICE.toLowerCase()));
-		params.add(new BasicNameValuePair("rom_id", System.getProperty("otaupdater.otaid")));
+		params.add(new BasicNameValuePair("rom_id", Utils.getRomID()));
 
 		try {
 			HttpClient http = new DefaultHttpClient();

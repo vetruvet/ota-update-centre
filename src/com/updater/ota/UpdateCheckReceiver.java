@@ -33,7 +33,7 @@ import com.updater.ota.FetchRomInfoTask.RomInfoListener;
 public class UpdateCheckReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, Intent intent) {
-	    if (System.getProperty(Config.OTA_ID_PROP) != null) {
+	    if (Utils.isROMSupported()) {
 	        if (Utils.marketAvailable(context)) {
         	    GCMRegistrar.checkDevice(context.getApplicationContext());
                 GCMRegistrar.checkManifest(context.getApplicationContext());
