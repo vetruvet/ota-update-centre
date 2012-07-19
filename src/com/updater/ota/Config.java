@@ -36,7 +36,7 @@ public class Config {
         } catch (NameNotFoundException e) {
         }
         curDevice = android.os.Build.DEVICE.toLowerCase();
-        curRomID = System.getProperty("otaupdater.otaid");
+        curRomID = Utils.getRomID();
     }
     private static Config instance = null;
     public static synchronized Config getInstance(Context ctx) {
@@ -67,6 +67,9 @@ public class Config {
     }
     
     public boolean upToDate() {
+        if (lastDevice == null) return false;
+        if (lastRomID == null) return false;
+        if (curRomID == null) return false;
         return curVersion == lastVersion && curDevice.equals(lastDevice) && curRomID.equals(lastRomID);
     }
     
