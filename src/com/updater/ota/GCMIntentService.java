@@ -53,7 +53,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		i.setAction(OTAUpdaterActivity.NOTIF_ACTION);
 		info.addToIntent(i);
 
-		PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, i, 0);
+		PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Notification.Builder builder = new Notification.Builder(ctx);
         builder.setContentIntent(contentIntent);
