@@ -231,6 +231,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             	dialog.dismiss();
 
             	final File file = new File(Config.DL_PATH + "_" + info.mBuild + "_"  + info.mRom + ".zip");
+            	if (file.exists()) file.delete();
 
             	final ProgressDialog progressDialog = new ProgressDialog(OTAUpdaterActivity.this);
             	progressDialog.setTitle(R.string.alert_downloading);
@@ -239,6 +240,8 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                 progressDialog.setProgress(0);
 
                 new AsyncTask<Void, Integer, Boolean>() {
+                    private int scale = 1048576;
+                    
 					@Override
 					protected void onPreExecute() {
 						progressDialog.show();
@@ -255,6 +258,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 
                             URLConnection conn = getUrl.openConnection();
                             final int lengthOfFile = conn.getContentLength();
+                            if (lengthOfFile < 10000000) scale = 1024; //if less than 10 mb, scale using kb
                             publishProgress(0, lengthOfFile);
 
                             conn.connect();
@@ -306,9 +310,9 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 					@Override
 					protected void onProgressUpdate(Integer... values) {
 						if (values.length == 0) return;
-                        progressDialog.setProgress(values[0] / 1048576);
+                        progressDialog.setProgress(values[0] / scale);
                         if (values.length == 1) return;
-                        progressDialog.setMax(values[1] / 1048576);
+                        progressDialog.setMax(values[1] / scale);
 					}
 				}.execute();
             }
