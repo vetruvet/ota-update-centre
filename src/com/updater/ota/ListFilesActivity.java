@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,9 +36,7 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
     private ArrayList<String> fileList = new ArrayList<String>();
     private ArrayList<String> pathList = new ArrayList<String>();
 
-    public static final String DL_PATH = Environment.getExternalStorageDirectory() + "/OTA-Updater/download/";
-    public static final File DL_PATH_FILE = new File(DL_PATH);
-    public static final int DL_PATH_LEN = DL_PATH.length();
+    public static final int DL_PATH_LEN = Config.DL_PATH.length();
 
     private void listFiles(File dir) {
         File[] files = dir.listFiles();
@@ -58,7 +55,7 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
 
         fileListAdapter = new ArrayAdapter<String>(this, R.layout.row, R.id.filename, fileList);
         setListAdapter(fileListAdapter);
-        listFiles(DL_PATH_FILE);
+        listFiles(Config.DL_PATH_FILE);
 
         this.getListView().setOnItemClickListener(this);
         this.getListView().setOnItemLongClickListener(this);
@@ -105,7 +102,7 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
 
                             String newName = input.getText().toString();
                             if (!newName.endsWith(".zip")) newName += ".zip";
-                            File newFile = new File(DL_PATH_FILE, newName);
+                            File newFile = new File(Config.DL_PATH_FILE, newName);
                             boolean renamed = file.renameTo(newFile);
 
                             if (renamed) {
@@ -114,7 +111,7 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
                                 Toast.makeText(getApplicationContext(), R.string.toast_rename_error, Toast.LENGTH_SHORT).show();
                             }
 
-                            listFiles(DL_PATH_FILE);
+                            listFiles(Config.DL_PATH_FILE);
                             return;
                         }
                     });
@@ -135,7 +132,7 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
                         Toast.makeText(getApplicationContext(), R.string.toast_delete_error, Toast.LENGTH_SHORT).show();
                     }
 
-                    listFiles(DL_PATH_FILE);
+                    listFiles(Config.DL_PATH_FILE);
                     break;
                 }
             }

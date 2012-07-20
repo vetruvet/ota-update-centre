@@ -230,7 +230,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
             	dialog.dismiss();
 
-            	final File file = new File(ListFilesActivity.DL_PATH + "_" + info.mBuild + "_"  + info.mRom + ".zip");
+            	final File file = new File(Config.DL_PATH + "_" + info.mBuild + "_"  + info.mRom + ".zip");
 
             	final ProgressDialog progressDialog = new ProgressDialog(OTAUpdaterActivity.this);
             	progressDialog.setTitle(R.string.alert_downloading);
@@ -325,7 +325,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 
     private void pruneFiles() {
         final long MAXFILEAGE = 2592000000L; // 1 month in milliseconds
-        File dir = new File(ListFilesActivity.DL_PATH);
+        File dir = new File(Config.DL_PATH);
         File[] files = dir.listFiles();
 
         boolean success = true;

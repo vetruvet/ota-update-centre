@@ -1,14 +1,23 @@
 package com.updater.ota;
 
+import java.io.File;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Environment;
 
 public class Config {
     public static final String GCM_SENDER_ID = "1068482628480";
     public static final String GCM_REGISTER_URL = "https://www.otaupdatecenter.pro/pages/regdevice.php";
     public static final String PULL_URL = "https://www.otaupdatecenter.pro/pages/romupdate.php";
     public static final String OTA_ID_PROP = "otaupdater.otaid";
+    
+    public static final String DL_PATH = Environment.getExternalStorageDirectory() + "/OTA-Updater/download/";
+    public static final File DL_PATH_FILE = new File(Config.DL_PATH);
+    static {
+        DL_PATH_FILE.mkdirs();
+    }
     
     private int lastVersion = -1;
     private String lastDevice = null;
