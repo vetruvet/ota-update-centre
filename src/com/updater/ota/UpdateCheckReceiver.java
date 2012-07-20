@@ -65,8 +65,12 @@ public class UpdateCheckReceiver extends BroadcastReceiver {
 	                    }
 
 	                    if (available) {
+	                        Intent i = new Intent(context, OTAUpdaterActivity.class);
+	                        i.setAction(OTAUpdaterActivity.NOTIF_ACTION);
+	                        info.addToIntent(i);
+	                        
 	                        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-	                        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, new Intent(), 0);
+	                        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, i, 0);
 
 	                        Notification.Builder builder = new Notification.Builder(context);
 	                        builder.setContentIntent(contentIntent);
