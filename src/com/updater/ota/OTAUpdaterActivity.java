@@ -79,6 +79,15 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 				}
 			});
         	alert.create().show();
+        	
+        	if (Utils.marketAvailable(this)) {
+        	    GCMRegistrar.checkDevice(getApplicationContext());
+                GCMRegistrar.checkManifest(getApplicationContext());
+                final String regId = GCMRegistrar.getRegistrationId(getApplicationContext());
+                if (regId.length() != 0) {
+                    GCMRegistrar.unregister(getApplicationContext());
+                }
+        	}
         } else { 
             if (Utils.marketAvailable(this)) {
                 GCMRegistrar.checkDevice(getApplicationContext());
