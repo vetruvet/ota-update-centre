@@ -13,6 +13,8 @@ public class Config {
     public static final String PULL_URL = "https://www.otaupdatecenter.pro/pages/romupdate.php";
     public static final String OTA_ID_PROP = "otaupdater.otaid";
     
+    public static final int WAKE_TIMEOUT = 30000;
+    
     public static final String DL_PATH = Environment.getExternalStorageDirectory() + "/OTA-Updater/download/";
     public static final File DL_PATH_FILE = new File(Config.DL_PATH);
     static {

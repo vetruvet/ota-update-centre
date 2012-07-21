@@ -34,6 +34,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.provider.Settings;
@@ -233,11 +235,16 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 
             	final ProgressDialog progressDialog = new ProgressDialog(OTAUpdaterActivity.this);
             	progressDialog.setTitle(R.string.alert_downloading);
+            	progressDialog.setMessage("Changelog: " + info.mChange);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progressDialog.setCancelable(true);
                 progressDialog.setProgress(0);
-
-                new AsyncTask<Void, Integer, Integer>() {
+                
+                PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                final WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, UpdateCheckReceiver.class.getName());
+                wl.acquire();
+                
+                final AsyncTask<Void, Integer, Integer> dlTask = new AsyncTask<Void, Integer, Integer>() {
                     private int scale = 1048576;
                     
 					@Override
@@ -312,6 +319,9 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 					@Override
                     protected void onCancelled(Integer result) {
 					    progressDialog.dismiss();
+					    wl.release();
+					    wl.acquire(Config.WAKE_TIMEOUT);
+					    
                         switch (result) {
                         case 0:
                             break;
@@ -329,6 +339,9 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                     @Override
 					protected void onPostExecute(Integer result) {
 						progressDialog.dismiss();
+						wl.release();
+                        wl.acquire(Config.WAKE_TIMEOUT);
+                        
 						switch (result) {
 						case 0:
 						    ListFilesActivity.installFileDialog(OTAUpdaterActivity.this, file);
@@ -351,7 +364,16 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                         if (values.length == 1) return;
                         progressDialog.setMax(values[1] / scale);
 					}
-				}.execute();
+				};
+				dlTask.execute();
+
+                progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        progressDialog.dismiss();
+                        dlTask.cancel(true);
+                    }
+                });
             }
         });
 
