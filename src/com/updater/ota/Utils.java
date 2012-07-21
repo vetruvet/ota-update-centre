@@ -59,4 +59,14 @@ public class Utils {
         ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo().isConnected();
     }
+    
+    private static final char[] HEX_DIGITS = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+    public static String byteArrToStr(byte[] bytes) {
+        StringBuffer str = new StringBuffer();
+        for (int q = 0; q < bytes.length; q++) {
+            str.append(HEX_DIGITS[(0xF0 & bytes[q]) >>> 4]);
+            str.append(HEX_DIGITS[0xF & bytes[q]]);
+        }
+        return str.toString();
+    }
 }
