@@ -19,13 +19,11 @@ package com.updater.ota;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-
-import org.apache.http.client.ClientProtocolException;
+import java.security.MessageDigest;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -239,7 +237,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                 progressDialog.setCancelable(true);
                 progressDialog.setProgress(0);
 
-                new AsyncTask<Void, Integer, Boolean>() {
+                new AsyncTask<Void, Integer, Integer>() {
                     private int scale = 1048576;
                     
 					@Override
@@ -248,7 +246,9 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 					}
 
 					@Override
-					protected Boolean doInBackground(Void... params) {
+					protected Integer doInBackground(Void... params) {
+					    InputStream is = null;
+					    OutputStream os = null;
 						try {
                             URL getUrl = new URL(info.mUrl);
                             long startTime = System.currentTimeMillis();
@@ -261,9 +261,11 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                             if (lengthOfFile < 10000000) scale = 1024; //if less than 10 mb, scale using kb
                             publishProgress(0, lengthOfFile);
 
+                            MessageDigest digest = MessageDigest.getInstance("MD5");
+                            
                             conn.connect();
-                            InputStream is = new BufferedInputStream(getUrl.openStream());
-                            OutputStream os = new FileOutputStream(file);
+                            is = new BufferedInputStream(getUrl.openStream());
+                            os = new FileOutputStream(file);
 
                             byte[] data = new byte[4096];
                             int nRead = -1;
@@ -271,39 +273,74 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                             while ((nRead = is.read(data)) != -1) {
                             	if (this.isCancelled()) break;
                                 os.write(data, 0, nRead);
+                                digest.update(data, 0, nRead);
                                 totalRead += nRead;
                                 publishProgress(totalRead);
                             }
 
-                            os.flush();
-                            os.close();
-                            is.close();
-
                             if (isCancelled()) {
                             	file.delete();
-                            	return false;
+                            	return 2;
+                            }
+                            
+                            String dlMd5 = Utils.byteArrToStr(digest.digest());
+                            Log.d("Download Manager", "downloaded md5: " + dlMd5);
+                            if (!info.md5.equalsIgnoreCase(dlMd5)) {
+                                file.delete();
+                                return 1;
                             }
 
                             long finishTime = System.currentTimeMillis();
                             Log.d("Download Manager", "download finished: " + finishTime);
-                            return true;
-                        } catch (ClientProtocolException e) {
+                            return 0;
+                        } catch (Exception e) {
                             e.printStackTrace();
                             file.delete();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            file.delete();
+                        } finally {
+                            if (is != null) {
+                                try { is.close(); }
+                                catch (Exception e) { }
+                            }
+                            if (os != null) {
+                                try { os.flush(); os.close(); }
+                                catch (Exception e) { }
+                            }
                         }
-                        return false;
+                        return -1;
 					}
 
 					@Override
-					protected void onPostExecute(Boolean result) {
+                    protected void onCancelled(Integer result) {
+					    progressDialog.dismiss();
+                        switch (result) {
+                        case 0:
+                            break;
+                        case 1:
+                            Toast.makeText(OTAUpdaterActivity.this, R.string.toast_download_md5_mismatch, Toast.LENGTH_SHORT).show();
+                            break;
+                        case 2:
+                            Toast.makeText(OTAUpdaterActivity.this, R.string.toast_download_interrupted, Toast.LENGTH_SHORT).show();
+                            break;
+                        default:
+                            Toast.makeText(OTAUpdaterActivity.this, R.string.toast_download_error, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+					protected void onPostExecute(Integer result) {
 						progressDialog.dismiss();
-						if (!result) {
-							Toast.makeText(OTAUpdaterActivity.this, R.string.toast_download_error, Toast.LENGTH_SHORT).show();
-						} else {
-							ListFilesActivity.installFileDialog(OTAUpdaterActivity.this, file);
+						switch (result) {
+						case 0:
+						    ListFilesActivity.installFileDialog(OTAUpdaterActivity.this, file);
+						    break;
+						case 1:
+						    Toast.makeText(OTAUpdaterActivity.this, R.string.toast_download_md5_mismatch, Toast.LENGTH_SHORT).show();
+						    break;
+						case 2:
+						    Toast.makeText(OTAUpdaterActivity.this, R.string.toast_download_interrupted, Toast.LENGTH_SHORT).show();
+						    break;
+						default:
+						    Toast.makeText(OTAUpdaterActivity.this, R.string.toast_download_error, Toast.LENGTH_SHORT).show();
 						}
 					}
 

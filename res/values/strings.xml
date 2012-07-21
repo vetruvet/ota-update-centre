@@ -42,7 +42,9 @@
     <string name="toast_prune_error">There was a problem deleting one or more old files</string>
     <string name="toast_no_updates">There are no updates at this time</string>
     <string name="toast_fetch_error">There was an error fetching OTA information</string>
-    <string name="toast_download_error">The download was interrupted!</string>
+    <string name="toast_download_interrupted">The download was interrupted!</string>
+    <string name="toast_download_md5_mismatch">MD5 error - downloaded file invalid!</string>
+    <string name="toast_download_error">There was an error with the download!</string>
     
     <string name="prefs_title">Settings</string>
     <string name="prefs_notif_title">Notification Settings</string>
