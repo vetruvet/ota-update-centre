@@ -38,6 +38,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -53,6 +54,9 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 
     private boolean checkOnResume = false;
     private Config cfg;
+    
+    private boolean fetching = false;
+    private Preference availUpdatePref;
 
     /** Called when the activity is first created. */
     @Override
@@ -123,6 +127,8 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             version.setSummary(buildVer);
             final Preference build = findPreference("build_view");
             build.setSummary(buildPrint);
+            
+            availUpdatePref = findPreference("avail_updates");
         }
     }
 
@@ -132,10 +138,11 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
-        if (!ni.isConnected()) {
+        boolean connected = ni != null && ni.isConnected();
+        if (!connected || ni.getType() == ConnectivityManager.TYPE_MOBILE) {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setTitle(R.string.alert_nodata_title);
-            alert.setMessage(R.string.alert_nodata_message);
+            alert.setTitle(connected ? R.string.alert_nowifi_title : R.string.alert_nodata_title);
+            alert.setMessage(connected ? R.string.alert_nowifi_message : R.string.alert_nodata_message);
             alert.setPositiveButton(R.string.alert_wifi_settings, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -163,6 +170,15 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             checkForRomUpdates();
             checkOnResume = false;
         }
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        if (preference == availUpdatePref) {
+            if (!fetching) checkForRomUpdates();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -195,35 +211,41 @@ public class OTAUpdaterActivity extends PreferenceActivity {
     }
 
     private void checkForRomUpdates() {
+        if (fetching) return;
         new FetchRomInfoTask(this, new RomInfoListener() {
             @Override
-            public void onStartLoading() { }
+            public void onStartLoading() {
+                fetching = true;
+            }
             @Override
 			public void onLoaded(RomInfo info) {
+                fetching = false;
                 String buildVersion = android.os.Build.ID;
                 if (info == null) {
+                    availUpdatePref.setSummary("Error fetching update info");
                 	Toast.makeText(OTAUpdaterActivity.this, R.string.toast_fetch_error, Toast.LENGTH_SHORT).show();
                 } else if (info.mRom != null && info.mRom.length() != 0 && !buildVersion.equals(info.mRom)) {
                     showUpdateDialog(info);
                 } else {
+                    availUpdatePref.setSummary("No updates available");
                     Toast.makeText(OTAUpdaterActivity.this, R.string.toast_no_updates, Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
             public void onError(String error) {
+                fetching = false;
+                availUpdatePref.setSummary("Error fetching update info: " + error);
                 Toast.makeText(OTAUpdaterActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         }).execute();
     }
 
-    @SuppressWarnings("deprecation")
     private void showUpdateDialog(final RomInfo info) {
     	AlertDialog.Builder alert = new AlertDialog.Builder(OTAUpdaterActivity.this);
         alert.setTitle(R.string.alert_update_title);
         //TODO redo this...
         alert.setMessage("Changelog: " + info.mChange);
-        final Preference build = findPreference("avail_updates");
-        build.setSummary("New updates: " + info.mRom);
+        availUpdatePref.setSummary("New updates: " + info.mRom);
 
         alert.setPositiveButton(R.string.alert_download, new DialogInterface.OnClickListener() {
             @Override

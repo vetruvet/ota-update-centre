@@ -11,6 +11,8 @@
     
     <string name="alert_nodata_title">No Data Connection!</string>
     <string name="alert_nodata_message">You have no data connection\nPlease turn on Wi-Fi or Mobile Data in order to check for and download OTA updates.</string>
+    <string name="alert_nowifi_title">No Wi-Fi Connection!</string>
+    <string name="alert_nowifi_message">You are on a mobile connection\nThis app uses data heavily to download ROM updates.\nIt is recommended to turn on Wi-Fi to avoid overage charges.</string>
     <string name="alert_wifi_settings">Wi-Fi Settings</string>
     <string name="alert_ignore">Ignore</string>
     <string name="alert_exit">Exit</string>

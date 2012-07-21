@@ -104,7 +104,7 @@ public class FetchRomInfoTask extends AsyncTask<Void, Void, RomInfo> {
     @Override
     public void onPostExecute(RomInfo result) {
         if (callback != null) {
-            if (result == null) callback.onLoaded(result);
+            if (result != null) callback.onLoaded(result);
             else callback.onError(error);
         }
     }
