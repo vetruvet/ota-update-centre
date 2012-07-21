@@ -16,6 +16,7 @@
 
 package com.updater.ota;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -142,7 +143,7 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
         builder.create().show();
     }
 
-    protected static void installFileDialog(Context ctx, final File file) {
+    protected static void installFileDialog(final Context ctx, final File file) {
     	Resources r = ctx.getResources();
         String[] installOpts = r.getStringArray(R.array.install_options);
         final boolean[] selectedOpts = new boolean[installOpts.length];
@@ -150,7 +151,7 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
 
         AlertDialog.Builder alert = new AlertDialog.Builder(ctx);
         alert.setTitle(R.string.alert_install_title);
-        alert.setMessage(R.string.alert_install_message);
+//        alert.setMessage(R.string.alert_install_message);
         alert.setMultiChoiceItems(installOpts, selectedOpts, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -161,7 +162,47 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                //TODO actual reboot & do!
+                
+                AlertDialog.Builder alert = new AlertDialog.Builder(ctx);
+                alert.setTitle(R.string.alert_install_title);
+                alert.setMessage(R.string.alert_install_message);
+                alert.setPositiveButton(R.string.alert_install, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            String path = file.getAbsolutePath();
+                            if (path.startsWith("/mnt")) path = path.substring(4);
+                            
+                            Process p = Runtime.getRuntime().exec("su");
+                            DataOutputStream os = new DataOutputStream(p.getOutputStream());
+//                            if (selectedOpts[0]) {
+//                                os.writeBytes("echo 'backup_rom /sdcard/clockwordmod/backup/" + 
+//                                        new SimpleDateFormat("yyyy-MM-dd_HH.mm").format(new Date()) + 
+//                                        "' >> /cache/recovery/extendedcommand\n");
+//                            }
+                            if (selectedOpts[0]) {
+                                os.writeBytes("echo '--wipe_data' >> /cache/recovery/command\n");
+                            }
+                            if (selectedOpts[1]) {
+                                os.writeBytes("echo '--wipe_cache' >> /cache/recovery/command\n");
+                            }
+                            os.writeBytes("echo '--update_package=" + path + "' >> /cache/recovery/command\n");
+                            os.writeBytes("reboot recovery\n");
+                            os.writeBytes("exit\n");
+                            os.flush();
+                            p.waitFor();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                alert.setNegativeButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alert.create().show();
             }
         });
         alert.setNegativeButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {

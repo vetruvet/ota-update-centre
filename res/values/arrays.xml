@@ -24,7 +24,7 @@
     </string-array>
     
     <string-array name="install_options">
-        <item>Backup First</item>
+        <!-- <item>Backup First</item> -->
         <item>Wipe Data</item>
         <item>Wipe Cache</item>
     </string-array>
