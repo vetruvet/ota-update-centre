@@ -9,7 +9,6 @@
     <permission android:name="com.updater.ota.permission.C2D_MESSAGE" android:protectionLevel="signature" />
     
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.REBOOT"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
