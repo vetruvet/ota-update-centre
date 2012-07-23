@@ -52,6 +52,8 @@ import com.updater.ota.FetchRomInfoTask.RomInfoListener;
 public class OTAUpdaterActivity extends PreferenceActivity {
     protected static final String NOTIF_ACTION = "com.updater.ota.action.NOTIF_ACTION";
 
+    private boolean ignoredDataWarn = false;
+    
     private boolean checkOnResume = false;
     private Config cfg;
     
@@ -148,7 +150,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         boolean connected = ni != null && ni.isConnected();
-        if (!connected || ni.getType() == ConnectivityManager.TYPE_MOBILE) {
+        if (!connected || ni.getType() == ConnectivityManager.TYPE_MOBILE && !ignoredDataWarn) {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setTitle(connected ? R.string.alert_nowifi_title : R.string.alert_nodata_title);
             alert.setMessage(connected ? R.string.alert_nowifi_message : R.string.alert_nodata_message);
@@ -163,6 +165,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    ignoredDataWarn = true;
                 }
             });
             alert.setNegativeButton(R.string.alert_exit, new DialogInterface.OnClickListener() {
