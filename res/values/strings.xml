@@ -68,8 +68,8 @@
     <string name="main_device_info">Device Information</string>
     <string name="main_device">Device</string>
     <string name="main_rom">ROM</string>
-    <string name="main_version">Version</string>
-    <string name="main_build">Build Fingerprint</string>
+    <string name="main_version">ROM Version</string>
+    <string name="main_otaid">OTA Updater ID</string>
     <string name="main_updates">Updates</string>
     <string name="main_avail_updates">Available Updates</string>
 

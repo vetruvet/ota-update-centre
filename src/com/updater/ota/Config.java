@@ -12,6 +12,8 @@ public class Config {
     public static final String GCM_REGISTER_URL = "https://www.otaupdatecenter.pro/pages/regdevice.php";
     public static final String PULL_URL = "https://www.otaupdatecenter.pro/pages/romupdate.php";
     public static final String OTA_ID_PROP = "otaupdater.otaid";
+    public static final String OTA_VER_PROP = "otaupdater.otaver";
+    public static final String OTA_DATE_PROP = "otaupdater.otatime";
     
     public static final int WAKE_TIMEOUT = 30000;
     

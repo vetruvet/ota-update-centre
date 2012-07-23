@@ -24,6 +24,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
+import java.text.DateFormat;
+import java.util.Date;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -125,19 +127,21 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                 pruneFiles();
             }
     
-            String buildDevice = android.os.Build.DEVICE.toLowerCase();
-            String buildVer = android.os.Build.ID;
-            String buildRom = android.os.Build.DISPLAY;
-            String buildPrint = android.os.Build.FINGERPRINT;
-    
+            String romVersion = Utils.getOtaVersion();
+            if (romVersion == null) romVersion = android.os.Build.ID;
+            Date romDate = Utils.getOtaDate();
+            if (romDate != null) {
+                romVersion += " (" + DateFormat.getDateTimeInstance().format(romDate) + ")";
+            }
+            
             final Preference device = findPreference("device_view");
-            device.setSummary(buildDevice);
+            device.setSummary(android.os.Build.DEVICE.toLowerCase());
             final Preference rom = findPreference("rom_view");
-            rom.setSummary(buildRom);
+            rom.setSummary(android.os.Build.DISPLAY);
             final Preference version = findPreference("version_view");
-            version.setSummary(buildVer);
-            final Preference build = findPreference("build_view");
-            build.setSummary(buildPrint);
+            version.setSummary(romVersion);
+            final Preference build = findPreference("otaid_view");
+            build.setSummary(Utils.getRomID());
             
             availUpdatePref = findPreference("avail_updates");
         }

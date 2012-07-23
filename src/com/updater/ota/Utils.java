@@ -1,6 +1,9 @@
 package com.updater.ota;
 
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -11,6 +14,8 @@ import android.net.ConnectivityManager;
 
 public class Utils {
     private static String cachedRomID = null;
+    private static Date cachedOtaDate = null;
+    private static String cachedOtaVer = null;
     
     public static boolean marketAvailable(Context ctx) {
         PackageManager pm = ctx.getPackageManager();
@@ -29,30 +34,55 @@ public class Utils {
     
     public static String getRomID() {
         if (cachedRomID == null) {
-            ProcessBuilder pb = new ProcessBuilder("/system/bin/getprop", Config.OTA_ID_PROP);
-            pb.redirectErrorStream(true);
-            
-            Process p = null;
-            InputStream is = null;
-            try {
-                p = pb.start();
-                is = p.getInputStream();
-                String prop = new Scanner(is).next();
-                if (prop.length() == 0) return null;
-                cachedRomID = prop;
-            } catch (NoSuchElementException e) {
-                return null;
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (p != null) p.destroy();
-                if (is != null) {
-                    try { is.close(); }
-                    catch (Exception e) { }
-                }
-            }
+            cachedRomID = getprop(Config.OTA_ID_PROP);
         }
         return cachedRomID;
+    }
+    
+    public static Date getOtaDate() {
+        if (cachedOtaDate == null) {
+            String otaDateStr = getprop(Config.OTA_DATE_PROP);
+            if (otaDateStr == null) return null;
+            try {
+                return new SimpleDateFormat("yyyyMMdd-kkmm").parse(otaDateStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            
+        }
+        return cachedOtaDate;
+    }
+    
+    public static String getOtaVersion() {
+        if (cachedOtaVer == null) {
+            cachedOtaVer = getprop(Config.OTA_VER_PROP);
+        }
+        return cachedOtaVer;
+    }
+    
+    private static String getprop(String name) {
+        ProcessBuilder pb = new ProcessBuilder("/system/bin/getprop", name);
+        pb.redirectErrorStream(true);
+        
+        Process p = null;
+        InputStream is = null;
+        try {
+            p = pb.start();
+            is = p.getInputStream();
+            String prop = new Scanner(is).next();
+            if (prop.length() == 0) return null;
+            return prop;
+        } catch (NoSuchElementException e) {
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (is != null) {
+                try { is.close(); }
+                catch (Exception e) { }
+            }
+        }
+        return null;
     }
     
     public static boolean dataAvailable(Context ctx) {

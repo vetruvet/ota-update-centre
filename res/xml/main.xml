@@ -20,9 +20,9 @@
             android:key="version_view" />
 
         <Preference
-            android:title="@string/main_build"
+            android:title="@string/main_otaid"
             android:icon="@drawable/key"
-            android:key="build_view" />
+            android:key="otaid_view" />
 
     </PreferenceCategory>
 
