@@ -113,9 +113,9 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                 }
             } else {
                 UpdateCheckReceiver.setAlarm(getApplicationContext());
-                checkOnResume = true;
             }
 
+            checkOnResume = true;
             addPreferencesFromResource(R.xml.main);
             
             Intent i = getIntent();
