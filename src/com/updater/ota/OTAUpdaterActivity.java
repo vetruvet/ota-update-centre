@@ -240,7 +240,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                 if (info == null) {
                     availUpdatePref.setSummary("Error fetching update info");
                 	Toast.makeText(OTAUpdaterActivity.this, R.string.toast_fetch_error, Toast.LENGTH_SHORT).show();
-                } else if (info.mRom != null && info.mRom.length() != 0 && !buildVersion.equals(info.mRom)) {
+                } else if (info.romName != null && info.romName.length() != 0 && !buildVersion.equals(info.romName)) {
                     showUpdateDialog(info);
                 } else {
                     availUpdatePref.setSummary("No updates available");
@@ -260,20 +260,20 @@ public class OTAUpdaterActivity extends PreferenceActivity {
     	AlertDialog.Builder alert = new AlertDialog.Builder(OTAUpdaterActivity.this);
         alert.setTitle(R.string.alert_update_title);
         //TODO redo this...
-        alert.setMessage("Changelog: " + info.mChange);
-        availUpdatePref.setSummary("New updates: " + info.mRom);
+        alert.setMessage("Changelog: " + info.changelog);
+        availUpdatePref.setSummary("New updates: " + info.romName);
 
         alert.setPositiveButton(R.string.alert_download, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
             	dialog.dismiss();
 
-            	final File file = new File(Config.DL_PATH + "_" + info.mBuild + "_"  + info.mRom + ".zip");
+            	final File file = new File(Config.DL_PATH + "_"  + info.romName + ".zip");
             	if (file.exists()) file.delete();
 
             	final ProgressDialog progressDialog = new ProgressDialog(OTAUpdaterActivity.this);
             	progressDialog.setTitle(R.string.alert_downloading);
-            	progressDialog.setMessage("Changelog: " + info.mChange);
+            	progressDialog.setMessage("Changelog: " + info.changelog);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progressDialog.setCancelable(true);
                 progressDialog.setProgress(0);
@@ -295,7 +295,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 					    InputStream is = null;
 					    OutputStream os = null;
 						try {
-                            URL getUrl = new URL(info.mUrl);
+                            URL getUrl = new URL(info.url);
                             long startTime = System.currentTimeMillis();
                             Log.d("Download Manager", "download beginning: " + startTime);
                             Log.d("Download Manager", "download url: " + getUrl);

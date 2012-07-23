@@ -19,34 +19,34 @@ package com.updater.ota;
 import android.content.Intent;
 
 public class RomInfo {
-    public String mRom;
-    public String mChange;
-    public String mUrl;
-    public String mBuild;
+    public String romName;
+    public String version;
+    public String changelog;
+    public String url;
     public String md5;
 
-    public RomInfo(String rom, String changelog, String downurl, String build, String md5) {
-        mRom = rom;
-        mChange = changelog;
-        mUrl = downurl;
-        mBuild = build;
+    public RomInfo(String romName, String version, String changelog, String downurl, String md5) {
+        this.romName = romName;
+        this.version = version;
+        this.changelog = changelog;
+        this.url = downurl;
         this.md5 = md5;
     }
 
     public static RomInfo fromIntent(Intent i) {
     	return new RomInfo(
     			i.getStringExtra("info_rom"),
+    			i.getStringExtra("info_version"),
     			i.getStringExtra("info_changelog"),
     			i.getStringExtra("info_url"),
-    			i.getStringExtra("info_build"),
     			i.getStringExtra("info_md5"));
     }
 
     public void addToIntent(Intent i) {
-    	i.putExtra("info_rom", mRom);
-    	i.putExtra("info_changelog", mChange);
-    	i.putExtra("info_url", mUrl);
-    	i.putExtra("info_build", mBuild);
+    	i.putExtra("info_rom", romName);
+    	i.putExtra("info_version", version);
+    	i.putExtra("info_changelog", changelog);
+    	i.putExtra("info_url", url);
     	i.putExtra("info_md5", md5);
     }
 }

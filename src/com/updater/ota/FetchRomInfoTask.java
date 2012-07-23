@@ -84,9 +84,9 @@ public class FetchRomInfoTask extends AsyncTask<Void, Void, RomInfo> {
 
                 return new RomInfo(
                         json.getString("rom"),
+                        json.getString("version"),
                         json.getString("changelog"),
                         json.getString("url"),
-                		json.getString("build-fingerprint"),
                 		json.getString("md5"));
             } else {
                 if (e != null) e.consumeContent();

@@ -60,7 +60,7 @@ public class UpdateCheckReceiver extends BroadcastReceiver {
 	                public void onLoaded(RomInfo info) {
 	                    boolean available = false;
 	                    String buildVersion = android.os.Build.ID;
-	                    if (info != null && info.mRom != null && !info.mRom.isEmpty() && !buildVersion.equals(info.mRom)) {
+	                    if (info != null && info.romName != null && !info.romName.isEmpty() && !buildVersion.equals(info.romName)) {
 	                        available = true;
 	                    }
 
