@@ -175,6 +175,8 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
                             
                             Process p = Runtime.getRuntime().exec("su");
                             DataOutputStream os = new DataOutputStream(p.getOutputStream());
+                            os.writeBytes("rm -f /cache/recovery/command\n");
+                            os.writeBytes("rm -f /cache/recovery/extendedcommand\n");
 //                            if (selectedOpts[0]) {
 //                                os.writeBytes("echo 'backup_rom /sdcard/clockwordmod/backup/" + 
 //                                        new SimpleDateFormat("yyyy-MM-dd_HH.mm").format(new Date()) + 
