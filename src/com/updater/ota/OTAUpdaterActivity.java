@@ -399,7 +399,6 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                         progressDialog.setMax(values[1] / scale);
 					}
 				};
-				dlTask.execute();
 				
 				progressDialog.setButton(Dialog.BUTTON_NEGATIVE, getString(R.string.alert_cancel), new DialogInterface.OnClickListener() {
                     @Override
@@ -408,6 +407,8 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                         dlTask.cancel(true);
                     }
                 });
+				
+                dlTask.execute();
             }
         });
 
