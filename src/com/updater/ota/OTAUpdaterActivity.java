@@ -28,6 +28,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -259,23 +260,22 @@ public class OTAUpdaterActivity extends PreferenceActivity {
     private void showUpdateDialog(final RomInfo info) {
     	AlertDialog.Builder alert = new AlertDialog.Builder(OTAUpdaterActivity.this);
         alert.setTitle(R.string.alert_update_title);
-        //TODO redo this...
-        alert.setMessage("Changelog: " + info.changelog);
-        availUpdatePref.setSummary("New updates: " + info.romName);
+        alert.setMessage("This update will update your ROM to version " + info.version);
+        availUpdatePref.setSummary("New updates: " + info.romName + "(version " + info.version + ")");
 
         alert.setPositiveButton(R.string.alert_download, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
             	dialog.dismiss();
 
-            	final File file = new File(Config.DL_PATH + "_"  + info.romName + ".zip");
+            	final File file = new File(Config.DL_PATH + info.romName + "_" + info.version + ".zip");
             	if (file.exists()) file.delete();
 
             	final ProgressDialog progressDialog = new ProgressDialog(OTAUpdaterActivity.this);
             	progressDialog.setTitle(R.string.alert_downloading);
             	progressDialog.setMessage("Changelog: " + info.changelog);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                progressDialog.setCancelable(true);
+                progressDialog.setCancelable(false);
                 progressDialog.setProgress(0);
                 
                 PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -404,10 +404,10 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 					}
 				};
 				dlTask.execute();
-
-                progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+				
+				progressDialog.setButton(Dialog.BUTTON_NEGATIVE, getString(R.string.alert_cancel), new DialogInterface.OnClickListener() {
                     @Override
-                    public void onCancel(DialogInterface dialog) {
+                    public void onClick(DialogInterface dialog, int which) {
                         progressDialog.dismiss();
                         dlTask.cancel(true);
                     }
