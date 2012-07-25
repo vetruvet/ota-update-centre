@@ -15,12 +15,6 @@
     <PreferenceCategory
         android:title="prefs_notif_title">
 
-        <ListPreference
-            android:title="@string/pref_interval_title"
-            android:key="pref_interval"
-            android:entries="@array/list_update_interval_array"
-            android:entryValues="@array/list_update_interval_values" />
-
         <CheckBoxPreference
             android:title="@string/pref_led_title"
             android:summary="@string/pref_led_summary"

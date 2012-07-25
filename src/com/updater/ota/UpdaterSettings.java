@@ -20,18 +20,15 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
-public class UpdaterSettings extends PreferenceActivity implements OnPreferenceChangeListener {
+public class UpdaterSettings extends PreferenceActivity {
     private SharedPreferences prefs;
 
     private CheckBoxPreference notifPref;
-    private ListPreference intervalPref;
     private CheckBoxPreference ledPref;
     private CheckBoxPreference vibratePref;
     private Preference versionPref;
@@ -47,11 +44,6 @@ public class UpdaterSettings extends PreferenceActivity implements OnPreferenceC
 
         notifPref = (CheckBoxPreference) findPreference("pref_notif");
         notifPref.setChecked(prefs.getBoolean("notif", false));
-
-        intervalPref = (ListPreference) findPreference("pref_interval");
-        intervalPref.setValue(String.valueOf(prefs.getInt("notif_interval", 1)));
-        intervalPref.setSummary(intervalPref.getEntries()[intervalPref.findIndexOfValue(intervalPref.getEntry().toString())]);
-        intervalPref.setOnPreferenceChangeListener(this);
 
         ledPref = (CheckBoxPreference) findPreference("pref_led");
         ledPref.setChecked(prefs.getBoolean("notif_led", false));
@@ -81,18 +73,6 @@ public class UpdaterSettings extends PreferenceActivity implements OnPreferenceC
             editor.putBoolean("notif_vibrate", vibratePref.isChecked());
         } else if (preference == updatePref) {
             //TODO check for app updates
-        }
-
-        editor.commit();
-        return true;
-    }
-
-    @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
-        SharedPreferences.Editor editor = prefs.edit();
-
-        if (preference == intervalPref) {
-            editor.putInt("notif_interval", Integer.parseInt(newValue.toString()));
         }
 
         editor.commit();
