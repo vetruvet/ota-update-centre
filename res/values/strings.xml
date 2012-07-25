@@ -31,11 +31,13 @@
     <string name="alert_unsupported_title">Unsupported ROM</string>
     <string name="alert_unsupported_message">The ROM developer has not enabled support for the OTA Updater! Please ask them (kindly) to add support before using this app!\n\n(otaupdater.otaid value empty or missing)</string>
     <string name="alert_update_to">This update will update your ROM (%1$s) to version %2$s</string>
+    <string name="alert_prune_title">Delete files older than</string>
     
     <string name="menu_view">View Downloaded ROMs</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_exit">Exit</string>
+    <string name="menu_prune">Delete old Files</string>
     
     <string name="toast_rename">File renamed succesfully</string>
     <string name="toast_rename_error">There was a problem while renaming the selected file</string>
@@ -54,8 +56,6 @@
     <string name="prefs_about_title">About</string>
     <string name="pref_notif_title">Show update notifications</string>
     <string name="pref_notif_summary">Show update notifications for new versions of your current ROM.</string>
-    <string name="pref_delete_title">Delete old files</string>
-    <string name="pref_delete_summary">Delete ROMs that are over a month old.</string>
     <string name="pref_interval_title">Update check interval</string>
     <string name="pref_led_title">Pulse LED for notifications</string>
     <string name="pref_led_summary">Pulse the LED light for update notifications. Note: This will only work for devices which have an LED.</string>

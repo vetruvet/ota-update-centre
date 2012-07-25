@@ -124,10 +124,6 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             	showUpdateDialog(RomInfo.fromIntent(i));
             }
     
-            if (Config.getInstance(getApplicationContext()).getPruneFiles()) {
-                pruneFiles();
-            }
-    
             String romVersion = Utils.getOtaVersion();
             if (romVersion == null) romVersion = android.os.Build.ID;
             Date romDate = Utils.getOtaDate();
@@ -422,25 +418,5 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             }
         });
         alert.create().show();
-    }
-
-    private void pruneFiles() {
-        final long MAXFILEAGE = 2592000000L; // 1 month in milliseconds
-        File dir = new File(Config.DL_PATH);
-        File[] files = dir.listFiles();
-
-        boolean success = true;
-        for (File f : files) {
-            final Long lastmodified = f.lastModified();
-            if (lastmodified + MAXFILEAGE < System.currentTimeMillis()) {
-                if (!f.delete()) success = false;
-            }
-        }
-
-        if (success) {
-            Toast.makeText(getApplicationContext(), R.string.toast_prune, Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getApplicationContext(), R.string.toast_prune_error, Toast.LENGTH_SHORT).show();
-        }
     }
 }

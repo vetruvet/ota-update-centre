@@ -26,6 +26,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -60,6 +63,56 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
 
         this.getListView().setOnItemClickListener(this);
         this.getListView().setOnItemLongClickListener(this);
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.list_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.prune:
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle(R.string.alert_prune_title);
+            alert.setCancelable(true);
+            alert.setItems(R.array.file_ages, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    long maxAge = 2592000000l; //1 month
+                    switch (which) {
+                    case 0:
+                        maxAge = 604800000l; //1 week
+                        break;
+                    case 1:
+                        maxAge = 1209600000l; //2 weeks
+                        break;
+                    case 2:
+                        maxAge = 2592000000l; //1 month
+                        break;
+                    case 3:
+                        maxAge = 7776000000l; //3 months
+                        break;
+                    case 4:
+                        maxAge = 15552000000l; //6 months
+                        break;
+                    }
+                    pruneFiles(maxAge);
+                    listFiles(Config.DL_PATH_FILE);
+                }
+            });
+            
+            alert.create().show();
+            break;
+        case R.id.list_refresh:
+            listFiles(Config.DL_PATH_FILE);
+            break;
+        }
+        return true;
     }
 
     @Override
@@ -214,5 +267,24 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
             }
         });
         alert.create().show();
+    }
+    
+    private void pruneFiles(long maxAge) {
+        File dir = new File(Config.DL_PATH);
+        File[] files = dir.listFiles();
+
+        boolean success = true;
+        for (File f : files) {
+            final Long lastmodified = f.lastModified();
+            if (lastmodified + maxAge < System.currentTimeMillis()) {
+                if (!f.delete()) success = false;
+            }
+        }
+
+        if (success) {
+            Toast.makeText(getApplicationContext(), R.string.toast_prune, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.toast_prune_error, Toast.LENGTH_SHORT).show();
+        }
     }
 }

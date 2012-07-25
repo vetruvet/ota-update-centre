@@ -31,7 +31,6 @@ public class UpdaterSettings extends PreferenceActivity implements OnPreferenceC
     private SharedPreferences prefs;
 
     private CheckBoxPreference notifPref;
-    private CheckBoxPreference deletePref;
     private ListPreference intervalPref;
     private CheckBoxPreference ledPref;
     private CheckBoxPreference vibratePref;
@@ -48,9 +47,6 @@ public class UpdaterSettings extends PreferenceActivity implements OnPreferenceC
 
         notifPref = (CheckBoxPreference) findPreference("pref_notif");
         notifPref.setChecked(prefs.getBoolean("notif", false));
-
-        deletePref = (CheckBoxPreference) findPreference("pref_delete");
-        deletePref.setChecked(prefs.getBoolean("clean_up", false));
 
         intervalPref = (ListPreference) findPreference("pref_interval");
         intervalPref.setValue(String.valueOf(prefs.getInt("notif_interval", 1)));
@@ -79,8 +75,6 @@ public class UpdaterSettings extends PreferenceActivity implements OnPreferenceC
 
         if (preference == notifPref) {
             editor.putBoolean("notif", notifPref.isChecked());
-        } else if (preference == deletePref) {
-            editor.putBoolean("clean_up", deletePref.isChecked());
         } else if (preference == ledPref) {
             editor.putBoolean("notif_led", ledPref.isChecked());
         } else if (preference == vibratePref) {
