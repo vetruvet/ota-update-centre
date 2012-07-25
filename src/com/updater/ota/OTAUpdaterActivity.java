@@ -116,13 +116,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                 UpdateCheckReceiver.setAlarm(getApplicationContext());
             }
 
-            checkOnResume = true;
             addPreferencesFromResource(R.xml.main);
-            
-            Intent i = getIntent();
-            if (i.getAction().equals(NOTIF_ACTION)) {
-            	showUpdateDialog(RomInfo.fromIntent(i));
-            }
     
             String romVersion = Utils.getOtaVersion();
             if (romVersion == null) romVersion = android.os.Build.ID;
@@ -141,6 +135,13 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             build.setSummary(Utils.getRomID());
             
             availUpdatePref = findPreference("avail_updates");
+            
+            Intent i = getIntent();
+            if (i.getAction().equals(NOTIF_ACTION)) {
+                showUpdateDialog(RomInfo.fromIntent(i));
+            } else {
+                checkOnResume = true;
+            }
         }
     }
 
