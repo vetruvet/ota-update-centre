@@ -239,19 +239,19 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                 fetching = false;
                 String buildVersion = android.os.Build.ID;
                 if (info == null) {
-                    availUpdatePref.setSummary("Error fetching update info");
+                    availUpdatePref.setSummary(getString(R.string.main_updates_error, "Unknown error"));
                 	Toast.makeText(OTAUpdaterActivity.this, R.string.toast_fetch_error, Toast.LENGTH_SHORT).show();
                 } else if (info.romName != null && info.romName.length() != 0 && !buildVersion.equals(info.romName)) {
                     showUpdateDialog(info);
                 } else {
-                    availUpdatePref.setSummary("No updates available");
+                    availUpdatePref.setSummary(R.string.main_updates_none);
                     Toast.makeText(OTAUpdaterActivity.this, R.string.toast_no_updates, Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
             public void onError(String error) {
                 fetching = false;
-                availUpdatePref.setSummary("Error fetching update info: " + error);
+                availUpdatePref.setSummary(getString(R.string.main_updates_error, error));
                 Toast.makeText(OTAUpdaterActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         }).execute();
@@ -260,8 +260,8 @@ public class OTAUpdaterActivity extends PreferenceActivity {
     private void showUpdateDialog(final RomInfo info) {
     	AlertDialog.Builder alert = new AlertDialog.Builder(OTAUpdaterActivity.this);
         alert.setTitle(R.string.alert_update_title);
-        alert.setMessage("This update will update your ROM to version " + info.version);
-        availUpdatePref.setSummary("New updates: " + info.romName + "(version " + info.version + ")");
+        alert.setMessage(getString(R.string.alert_update_to, info.romName, info.version));
+        availUpdatePref.setSummary(getString(R.string.main_updates_new, info.romName, info.version));
 
         alert.setPositiveButton(R.string.alert_download, new DialogInterface.OnClickListener() {
             @Override

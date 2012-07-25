@@ -30,6 +30,7 @@
     <string name="alert_downloading">Downloading&#8230;</string>
     <string name="alert_unsupported_title">Unsupported ROM</string>
     <string name="alert_unsupported_message">The ROM developer has not enabled support for the OTA Updater! Please ask them (kindly) to add support before using this app!\n\n(otaupdater.otaid value empty or missing)</string>
+    <string name="alert_update_to">This update will update your ROM (%1$s) to version %2$s</string>
     
     <string name="menu_view">View Downloaded ROMs</string>
     <string name="menu_settings">Settings</string>
@@ -72,5 +73,8 @@
     <string name="main_otaid">OTA Updater ID</string>
     <string name="main_updates">Updates</string>
     <string name="main_avail_updates">Available Updates</string>
+    <string name="main_updates_none">No updates available</string>
+    <string name="main_updates_error">Error fetching update info: %1$s</string>
+    <string name="main_updates_new">"New updates: %1$s (version %2$s)</string>
 
 </resources>
