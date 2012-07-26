@@ -16,6 +16,8 @@
 
 package com.updater.ota;
 
+import java.util.Date;
+
 import android.content.Intent;
 
 public class RomInfo {
@@ -24,13 +26,15 @@ public class RomInfo {
     public String changelog;
     public String url;
     public String md5;
+    public Date date;
 
-    public RomInfo(String romName, String version, String changelog, String downurl, String md5) {
+    public RomInfo(String romName, String version, String changelog, String downurl, String md5, Date date) {
         this.romName = romName;
         this.version = version;
         this.changelog = changelog;
         this.url = downurl;
         this.md5 = md5;
+        this.date = date;
     }
 
     public static RomInfo fromIntent(Intent i) {
@@ -39,7 +43,8 @@ public class RomInfo {
     			i.getStringExtra("info_version"),
     			i.getStringExtra("info_changelog"),
     			i.getStringExtra("info_url"),
-    			i.getStringExtra("info_md5"));
+    			i.getStringExtra("info_md5"),
+    			Utils.parseDate(i.getStringExtra("info_date")));
     }
 
     public void addToIntent(Intent i) {
@@ -48,5 +53,6 @@ public class RomInfo {
     	i.putExtra("info_changelog", changelog);
     	i.putExtra("info_url", url);
     	i.putExtra("info_md5", md5);
+    	i.putExtra("info_date", Utils.formatDate(date));
     }
 }

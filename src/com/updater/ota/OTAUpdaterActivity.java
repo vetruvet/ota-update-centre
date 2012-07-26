@@ -234,11 +234,10 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             @Override
 			public void onLoaded(RomInfo info) {
                 fetching = false;
-                String buildVersion = android.os.Build.ID;
                 if (info == null) {
                     availUpdatePref.setSummary(getString(R.string.main_updates_error, "Unknown error"));
                 	Toast.makeText(OTAUpdaterActivity.this, R.string.toast_fetch_error, Toast.LENGTH_SHORT).show();
-                } else if (info.romName != null && info.romName.length() != 0 && !buildVersion.equals(info.romName)) {
+                } else if (Utils.isUpdate(info)) {
                     showUpdateDialog(info);
                 } else {
                     availUpdatePref.setSummary(R.string.main_updates_none);

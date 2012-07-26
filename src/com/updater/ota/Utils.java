@@ -59,12 +59,7 @@ public class Utils {
         if (cachedOtaDate == null) {
             String otaDateStr = getprop(Config.OTA_DATE_PROP);
             if (otaDateStr == null) return null;
-            try {
-                return new SimpleDateFormat("yyyyMMdd-kkmm").parse(otaDateStr);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            
+            cachedOtaDate = parseDate(otaDateStr);
         }
         return cachedOtaDate;
     }
@@ -104,6 +99,26 @@ public class Utils {
     public static boolean dataAvailable(Context ctx) {
         ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo().isConnected();
+    }
+    
+    public static Date parseDate(String date) {
+        try {
+            return new SimpleDateFormat("yyyyMMdd-kkmm").parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public static String formatDate(Date date) {
+        return new SimpleDateFormat("yyyyMMdd-kkmm").format(date);
+    }
+    
+    public static boolean isUpdate(RomInfo info) {
+        if (info == null) return false;
+        if (info.version == null || getOtaVersion() == null || info.version.equalsIgnoreCase(getOtaVersion())) return false;
+        if (info.date == null || getOtaDate() == null || !info.date.after(getOtaDate())) return false;
+        return true; 
     }
     
     private static final char[] HEX_DIGITS = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };

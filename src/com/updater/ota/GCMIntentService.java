@@ -48,7 +48,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	protected void onMessage(Context ctx, Intent payload) {
 		RomInfo info = RomInfo.fromIntent(payload);
-
+		
+		if (!Utils.isUpdate(info)) return;
+		
 		Intent i = new Intent(getApplicationContext(), OTAUpdaterActivity.class);
 		i.setAction(OTAUpdaterActivity.NOTIF_ACTION);
 		info.addToIntent(i);

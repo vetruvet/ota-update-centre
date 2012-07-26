@@ -87,7 +87,8 @@ public class FetchRomInfoTask extends AsyncTask<Void, Void, RomInfo> {
                         json.getString("version"),
                         json.getString("changelog"),
                         json.getString("url"),
-                		json.getString("md5"));
+                		json.getString("md5"),
+                		Utils.parseDate(json.getString("date")));
             } else {
                 if (e != null) e.consumeContent();
                 error = "Server responded with error " + status;
