@@ -23,7 +23,11 @@ import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
@@ -121,6 +125,24 @@ public class Utils {
         if (info.version == null || getOtaVersion() == null || info.version.equalsIgnoreCase(getOtaVersion())) return false;
         if (info.date == null || getOtaDate() == null || !info.date.after(getOtaDate())) return false;
         return true; 
+    }
+    
+    public static void showUpdateNotif(Context ctx, RomInfo info) {
+        Intent i = new Intent(ctx, OTAUpdaterActivity.class);
+        i.setAction(OTAUpdaterActivity.NOTIF_ACTION);
+        info.addToIntent(i);
+        
+        NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Notification.Builder builder = new Notification.Builder(ctx);
+        builder.setContentIntent(contentIntent);
+        builder.setContentTitle(ctx.getString(R.string.notif_source));
+        builder.setContentText(ctx.getString(R.string.notif_text_rom));
+        builder.setTicker(ctx.getString(R.string.notif_text_rom));
+        builder.setWhen(System.currentTimeMillis());
+        builder.setSmallIcon(R.drawable.updates);
+        nm.notify(1, builder.getNotification());
     }
     
     private static final char[] HEX_DIGITS = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
