@@ -25,9 +25,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -49,24 +46,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 	protected void onMessage(Context ctx, Intent payload) {
 		RomInfo info = RomInfo.fromIntent(payload);
 		
-		if (!Utils.isUpdate(info)) return;
+		if (!Utils.isUpdate(info)) {
+		    Config.getInstance(getApplicationContext()).clearStoredUpdate();
+		    return;
+		}
 		
-		Intent i = new Intent(getApplicationContext(), OTAUpdaterActivity.class);
-		i.setAction(OTAUpdaterActivity.NOTIF_ACTION);
-		info.addToIntent(i);
-
-		PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        Notification.Builder builder = new Notification.Builder(ctx);
-        builder.setContentIntent(contentIntent);
-        builder.setContentTitle(ctx.getString(R.string.notif_source));
-        builder.setContentText(ctx.getString(R.string.notif_text_rom));
-        builder.setTicker(ctx.getString(R.string.notif_text_rom));
-        builder.setWhen(System.currentTimeMillis());
-        builder.setSmallIcon(R.drawable.updates);
-
-        NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(1, builder.getNotification());
+		Config.getInstance(getApplicationContext()).storeUpdate(info);    
+		Utils.showUpdateNotif(ctx, info);
 	}
 
 	@Override

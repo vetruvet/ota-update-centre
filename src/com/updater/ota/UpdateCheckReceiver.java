@@ -17,8 +17,6 @@
 package com.updater.ota;
 
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,6 +31,17 @@ import com.updater.ota.FetchRomInfoTask.RomInfoListener;
 public class UpdateCheckReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, Intent intent) {
+	    final Config cfg = Config.getInstance(context.getApplicationContext());
+	    
+	    if (cfg.hasStoredUpdate()) {
+	        RomInfo info = cfg.getStoredUpdate();
+	        if (Utils.isUpdate(info)) {
+	            Utils.showUpdateNotif(context, info);
+	        } else {
+	            cfg.clearStoredUpdate();
+	        }
+	    }
+	    
 	    if (Utils.isROMSupported()) {
 	        if (Utils.marketAvailable(context)) {
         	    GCMRegistrar.checkDevice(context.getApplicationContext());
@@ -58,28 +67,11 @@ public class UpdateCheckReceiver extends BroadcastReceiver {
 	                public void onStartLoading() { }
 	                @Override
 	                public void onLoaded(RomInfo info) {
-	                    boolean available = false;
-	                    String buildVersion = android.os.Build.ID;
-	                    if (info != null && info.romName != null && !info.romName.isEmpty() && !buildVersion.equals(info.romName)) {
-	                        available = true;
-	                    }
-
-	                    if (available) {
-	                        Intent i = new Intent(context, OTAUpdaterActivity.class);
-	                        i.setAction(OTAUpdaterActivity.NOTIF_ACTION);
-	                        info.addToIntent(i);
-	                        
-	                        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-	                        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
-
-	                        Notification.Builder builder = new Notification.Builder(context);
-	                        builder.setContentIntent(contentIntent);
-	                        builder.setContentTitle(context.getString(R.string.notif_source));
-	                        builder.setContentText(context.getString(R.string.notif_text_rom));
-	                        builder.setTicker(context.getString(R.string.notif_text_rom));
-	                        builder.setWhen(System.currentTimeMillis());
-	                        builder.setSmallIcon(R.drawable.updates);
-	                        nm.notify(1, builder.getNotification());
+	                    if (Utils.isUpdate(info)) {
+	                        cfg.storeUpdate(info);
+	                        Utils.showUpdateNotif(context, info);
+	                    } else {
+                            cfg.clearStoredUpdate();
 	                    }
 
 	                    wl.release();
