@@ -102,6 +102,7 @@ public class Utils {
     }
     
     public static Date parseDate(String date) {
+        if (date == null) return null;
         try {
             return new SimpleDateFormat("yyyyMMdd-kkmm").parse(date);
         } catch (ParseException e) {
@@ -111,6 +112,7 @@ public class Utils {
     }
     
     public static String formatDate(Date date) {
+        if (date == null) return null;
         return new SimpleDateFormat("yyyyMMdd-kkmm").format(date);
     }
     
