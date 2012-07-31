@@ -4,8 +4,8 @@
     <item android:id="@+id/view"
         android:title="@string/menu_view" />
 
-    <item android:id="@+id/settings"
-        android:title="@string/menu_settings" />
+    <item android:id="@+id/about"
+        android:title="@string/menu_about" />
 
     <item android:id="@+id/refresh"
         android:title="@string/menu_refresh" />

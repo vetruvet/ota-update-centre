@@ -21,20 +21,20 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 
-public class UpdaterSettings extends PreferenceActivity {
+public class UpdaterAbout extends PreferenceActivity {
     private Preference versionPref;
 
     @Override
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.settings);
+        addPreferencesFromResource(R.xml.about);
 
-        versionPref = findPreference("pref_version");
+        versionPref = findPreference("about_version");
         try {
 			versionPref.setSummary(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
 		} catch (NameNotFoundException e) {
-			versionPref.setSummary(R.string.pref_version_unknown);
+			versionPref.setSummary(R.string.about_version_unknown);
 		}
     }
 }

@@ -34,7 +34,7 @@
     <string name="alert_prune_title">Delete files older than</string>
     
     <string name="menu_view">View Downloaded ROMs</string>
-    <string name="menu_settings">Settings</string>
+    <string name="menu_about">About</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_exit">Exit</string>
     <string name="menu_prune">Delete old Files</string>
@@ -51,10 +51,11 @@
     <string name="toast_download_md5_mismatch">MD5 error - downloaded file invalid!</string>
     <string name="toast_download_error">There was an error with the download!</string>
     
-    <string name="prefs_title">Settings</string>
-    <string name="prefs_about_title">About</string>
-    <string name="pref_version_title">Version</string>
-    <string name="pref_version_unknown">Unkown Version (error in package manager)</string>
+    <string name="about_title">About</string>
+    <string name="about_ota_title">OTA Updater</string>
+    <string name="about_ota_summary" translatable="false">http://otaupdatecenter.pro</string>
+    <string name="about_version_title">Version</string>
+    <string name="about_version_unknown">Unkown Version (error in package manager)</string>
     
     <string name="main_device_info">Device Information</string>
     <string name="main_device">Device</string>
