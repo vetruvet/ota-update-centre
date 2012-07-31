@@ -52,19 +52,9 @@
     <string name="toast_download_error">There was an error with the download!</string>
     
     <string name="prefs_title">Settings</string>
-    <string name="prefs_notif_title">Notification Settings</string>
     <string name="prefs_about_title">About</string>
-    <string name="pref_notif_title">Show update notifications</string>
-    <string name="pref_notif_summary">Show update notifications for new versions of your current ROM.</string>
-    <string name="pref_interval_title">Update check interval</string>
-    <string name="pref_led_title">Pulse LED for notifications</string>
-    <string name="pref_led_summary">Pulse the LED light for update notifications. Note: This will only work for devices which have an LED.</string>
-    <string name="pref_vibrate_title">Vibrate for update notifications</string>
-    <string name="pref_vibrate_summary">Vibrate for incoming update notifications</string>
     <string name="pref_version_title">Version</string>
     <string name="pref_version_unknown">Unkown Version (error in package manager)</string>
-    <string name="pref_update_title">Check for updates</string>
-    <string name="pref_update_summary">Check for application updates</string>
     
     <string name="main_device_info">Device Information</string>
     <string name="main_device">Device</string>

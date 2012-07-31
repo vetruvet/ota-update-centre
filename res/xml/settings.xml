@@ -2,44 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="@string/prefs_title">
-
-        <CheckBoxPreference
-            android:title="@string/pref_notif_title"
-            android:summary="@string/pref_notif_summary"
-            android:defaultValue="false"
-            android:key="pref_notif" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="prefs_notif_title">
-
-        <CheckBoxPreference
-            android:title="@string/pref_led_title"
-            android:summary="@string/pref_led_summary"
-            android:defaultValue="true"
-            android:key="pref_led" />
-
-        <CheckBoxPreference
-            android:title="@string/pref_vibrate_title"
-            android:summary="@string/pref_vibrate_summary"
-            android:defaultValue="false"
-            android:key="pref_vibrate" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
         android:title="@string/prefs_about_title">
 
         <Preference
             android:title="@string/pref_version_title"
             android:key="pref_version" />
-
-        <Preference
-            android:title="@string/pref_update_title"
-            android:summary="@string/pref_update_summary"
-            android:key="pref_update" />
 
     </PreferenceCategory>
 
