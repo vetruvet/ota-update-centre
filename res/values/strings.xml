@@ -25,6 +25,7 @@
     <string name="alert_install_title">Install ZIP</string>
     <string name="alert_install">Install</string>
     <string name="alert_install_message">Installing the file will reboot into recovery to flash the ZIP file. After installation, the system will automatically reboot.</string>
+    <string name="alert_noinstall_message">Unfortunately, ROMs on your device must be flashed manually.\nPlease use the correct method for your device to flash the ROM\n\nThe .zip file is located at: %1$s</string>
     <string name="alert_update_title">ROM update available!</string>
     <string name="alert_download">Download</string>
     <string name="alert_downloading">Downloading&#8230;</string>

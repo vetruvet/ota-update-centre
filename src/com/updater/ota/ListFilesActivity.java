@@ -205,67 +205,77 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
         AlertDialog.Builder alert = new AlertDialog.Builder(ctx);
         alert.setTitle(R.string.alert_install_title);
 //        alert.setMessage(R.string.alert_install_message);
-        alert.setMultiChoiceItems(installOpts, selectedOpts, new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                selectedOpts[which] = isChecked;
-            }
-        });
-        alert.setPositiveButton(R.string.alert_install, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                
-                AlertDialog.Builder alert = new AlertDialog.Builder(ctx);
-                alert.setTitle(R.string.alert_install_title);
-                alert.setMessage(R.string.alert_install_message);
-                alert.setPositiveButton(R.string.alert_install, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            String path = file.getAbsolutePath();
-                            if (path.startsWith("/mnt")) path = path.substring(4);
-                            
-                            Process p = Runtime.getRuntime().exec("su");
-                            DataOutputStream os = new DataOutputStream(p.getOutputStream());
-                            os.writeBytes("rm -f /cache/recovery/command\n");
-                            os.writeBytes("rm -f /cache/recovery/extendedcommand\n");
-//                            if (selectedOpts[0]) {
-//                                os.writeBytes("echo 'backup_rom /sdcard/clockwordmod/backup/" + 
-//                                        new SimpleDateFormat("yyyy-MM-dd_HH.mm").format(new Date()) + 
-//                                        "' >> /cache/recovery/extendedcommand\n");
-//                            }
-                            if (selectedOpts[0]) {
-                                os.writeBytes("echo '--wipe_data' >> /cache/recovery/command\n");
+        if (android.os.Build.DEVICE.toLowerCase().equals("gt-n7000")) { //can't flash programmatically, must flash manually
+            alert.setMessage(ctx.getString(R.string.alert_noinstall_message, file.getAbsolutePath()));
+            alert.setNeutralButton(R.string.alert_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+        } else {
+            alert.setMultiChoiceItems(installOpts, selectedOpts, new DialogInterface.OnMultiChoiceClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                    selectedOpts[which] = isChecked;
+                }
+            });
+            alert.setPositiveButton(R.string.alert_install, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    
+                    AlertDialog.Builder alert = new AlertDialog.Builder(ctx);
+                    alert.setTitle(R.string.alert_install_title);
+                    alert.setMessage(R.string.alert_install_message);
+                    alert.setPositiveButton(R.string.alert_install, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                String path = file.getAbsolutePath();
+                                if (path.startsWith("/mnt")) path = path.substring(4);
+                                
+                                Process p = Runtime.getRuntime().exec("su");
+                                DataOutputStream os = new DataOutputStream(p.getOutputStream());
+                                os.writeBytes("rm -f /cache/recovery/command\n");
+                                os.writeBytes("rm -f /cache/recovery/extendedcommand\n");
+//                                if (selectedOpts[0]) {
+//                                    os.writeBytes("echo 'backup_rom /sdcard/clockwordmod/backup/" + 
+//                                            new SimpleDateFormat("yyyy-MM-dd_HH.mm").format(new Date()) + 
+//                                            "' >> /cache/recovery/extendedcommand\n");
+//                                }
+                                if (selectedOpts[0]) {
+                                    os.writeBytes("echo '--wipe_data' >> /cache/recovery/command\n");
+                                }
+                                if (selectedOpts[1]) {
+                                    os.writeBytes("echo '--wipe_cache' >> /cache/recovery/command\n");
+                                }
+                                os.writeBytes("echo '--update_package=" + path + "' >> /cache/recovery/command\n");
+                                os.writeBytes("reboot recovery\n");
+                                os.writeBytes("exit\n");
+                                os.flush();
+                                p.waitFor();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            if (selectedOpts[1]) {
-                                os.writeBytes("echo '--wipe_cache' >> /cache/recovery/command\n");
-                            }
-                            os.writeBytes("echo '--update_package=" + path + "' >> /cache/recovery/command\n");
-                            os.writeBytes("reboot recovery\n");
-                            os.writeBytes("exit\n");
-                            os.flush();
-                            p.waitFor();
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
-                    }
-                });
-                alert.setNegativeButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                alert.create().show();
-            }
-        });
-        alert.setNegativeButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+                    });
+                    alert.setNegativeButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alert.create().show();
+                }
+            });
+            alert.setNegativeButton(R.string.alert_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+        }
         alert.create().show();
     }
     
