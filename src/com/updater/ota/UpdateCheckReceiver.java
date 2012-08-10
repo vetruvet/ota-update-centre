@@ -36,14 +36,19 @@ public class UpdateCheckReceiver extends BroadcastReceiver {
 	    if (cfg.hasStoredUpdate()) {
 	        RomInfo info = cfg.getStoredUpdate();
 	        if (Utils.isUpdate(info)) {
+	            Log.v("OTAUpdater", "Found stored update");
 	            Utils.showUpdateNotif(context, info);
 	        } else {
+	            Log.v("OTAUpdater", "Found invalid stored update");
 	            cfg.clearStoredUpdate();
 	        }
+	    } else {
+	        Log.v("OTAUpdater", "No stored update");
 	    }
 	    
 	    if (Utils.isROMSupported()) {
 	        if (Utils.marketAvailable(context)) {
+	            Log.v("OTAUpdater", "Found market, trying GCM");
         	    GCMRegistrar.checkDevice(context.getApplicationContext());
                 GCMRegistrar.checkManifest(context.getApplicationContext());
                 final String regId = GCMRegistrar.getRegistrationId(context.getApplicationContext());
@@ -62,6 +67,7 @@ public class UpdateCheckReceiver extends BroadcastReceiver {
                     Log.v("OTAUpdater::GCMRegister", "GCM registered");
                 }
 	        } else {
+	            Log.v("OTAUpdater", "No market, using pull method");
 	            if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
 	                setAlarm(context);
 	            }
