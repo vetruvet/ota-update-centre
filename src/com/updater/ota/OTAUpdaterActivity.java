@@ -18,6 +18,7 @@ package com.updater.ota;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -265,7 +266,36 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             	dialog.dismiss();
 
             	final File file = new File(Config.DL_PATH + info.romName + "_" + info.version + ".zip");
-            	if (file.exists()) file.delete();
+            	if (file.exists()) {
+            	    Log.v("OTAUpdater::Download", "Found old zip, checking md5");
+            	    
+            	    InputStream is = null;
+            	    try {
+            	        is = new FileInputStream(file);
+            	        MessageDigest digest = MessageDigest.getInstance("MD5");
+            	        byte[] data = new byte[4096];
+                        int nRead = -1;
+                        while ((nRead = is.read(data)) != -1) {
+                            digest.update(data, 0, nRead);
+                        }
+                        String oldMd5 = Utils.byteArrToStr(digest.digest());
+                        Log.v("OTAUpdater::Download", "old zip md5: " + oldMd5);
+                        if (!info.md5.equalsIgnoreCase(oldMd5)) {
+                            file.delete();
+                        } else {
+                            ListFilesActivity.installFileDialog(OTAUpdaterActivity.this, file);
+                            return;
+                        }
+            	    } catch (Exception e) {
+            	        e.printStackTrace();
+            	        file.delete();
+            	    } finally {
+                        if (is != null) {
+                            try { is.close(); }
+                            catch (Exception e) { }
+                        }
+                    }
+            	}
 
             	final ProgressDialog progressDialog = new ProgressDialog(OTAUpdaterActivity.this);
             	progressDialog.setTitle(R.string.alert_downloading);
@@ -292,10 +322,8 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 					    OutputStream os = null;
 						try {
                             URL getUrl = new URL(info.url);
-                            long startTime = System.currentTimeMillis();
-                            Log.d("Download Manager", "download beginning: " + startTime);
-                            Log.d("Download Manager", "download url: " + getUrl);
-                            Log.d("Download Manager", "file name: " + file);
+                            Log.v("OTAUpdater::Download", "downloading from: " + getUrl);
+                            Log.d("OTAUpdater::Download", "downloading to: " + file.getAbsolutePath());
 
                             URLConnection conn = getUrl.openConnection();
                             final int lengthOfFile = conn.getContentLength();
@@ -325,14 +353,13 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                             }
                             
                             String dlMd5 = Utils.byteArrToStr(digest.digest());
-                            Log.d("Download Manager", "downloaded md5: " + dlMd5);
+                            Log.v("OTAUpdater::Download", "downloaded md5: " + dlMd5);
                             if (!info.md5.equalsIgnoreCase(dlMd5)) {
+                                Log.w("OTAUpdater::Download", "downloaded md5 doesn't match " + info.md5);
                                 file.delete();
                                 return 1;
                             }
 
-                            long finishTime = System.currentTimeMillis();
-                            Log.d("Download Manager", "download finished: " + finishTime);
                             return 0;
                         } catch (Exception e) {
                             e.printStackTrace();
