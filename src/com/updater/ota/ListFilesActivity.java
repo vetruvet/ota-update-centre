@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -251,10 +252,10 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
                                     os.writeBytes("echo '--wipe_cache' >> /cache/recovery/command\n");
                                 }
                                 os.writeBytes("echo '--update_package=" + path + "' >> /cache/recovery/command\n");
-                                os.writeBytes("reboot recovery\n");
                                 os.writeBytes("exit\n");
                                 os.flush();
                                 p.waitFor();
+                                ((PowerManager) ctx.getSystemService(POWER_SERVICE)).reboot("recovery");
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
