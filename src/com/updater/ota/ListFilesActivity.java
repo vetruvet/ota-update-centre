@@ -252,6 +252,7 @@ public class ListFilesActivity extends ListActivity implements AdapterView.OnIte
                                     os.writeBytes("echo '--wipe_cache' >> /cache/recovery/command\n");
                                 }
                                 os.writeBytes("echo '--update_package=" + path + "' >> /cache/recovery/command\n");
+                                os.writeBytes("reboot recovery\n");
                                 os.writeBytes("exit\n");
                                 os.flush();
                                 p.waitFor();
