@@ -58,6 +58,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
 
     private boolean ignoredDataWarn = true;
     
+    private boolean dialogFromNotif = false;
     private boolean checkOnResume = false;
     private Config cfg;
     
@@ -139,7 +140,12 @@ public class OTAUpdaterActivity extends PreferenceActivity {
             
             Intent i = getIntent();
             if (i.getAction().equals(NOTIF_ACTION)) {
-                showUpdateDialog(RomInfo.fromIntent(i));
+                if (Utils.dataAvailable(getApplicationContext())) {
+                    dialogFromNotif = true;
+                    showUpdateDialog(RomInfo.fromIntent(i));
+                } else {
+                    checkOnResume = true;
+                }
             } else {
                 checkOnResume = true;
             }
@@ -154,7 +160,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         boolean connected = ni != null && ni.isConnected();
-        if ((!connected || ni.getType() == ConnectivityManager.TYPE_MOBILE) && !ignoredDataWarn) {
+        if ((!connected || ni.getType() == ConnectivityManager.TYPE_MOBILE) && !ignoredDataWarn && !dialogFromNotif) {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setTitle(connected ? R.string.alert_nowifi_title : R.string.alert_nodata_title);
             alert.setMessage(connected ? R.string.alert_nowifi_message : R.string.alert_nodata_message);
@@ -164,6 +170,7 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                     dialog.dismiss();
                     startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     ignoredDataWarn = true;
+                    checkOnResume = true;
                 }
             });
             alert.setNeutralButton(R.string.alert_ignore, new DialogInterface.OnClickListener() {
@@ -171,6 +178,17 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                     ignoredDataWarn = true;
+                    
+                    if (Utils.dataAvailable(getApplicationContext())) {
+                        Intent i = getIntent();
+                        if (i.getAction().equals(NOTIF_ACTION)) {
+                            dialogFromNotif = true;
+                            showUpdateDialog(RomInfo.fromIntent(i));
+                        } else {
+                            checkForRomUpdates();
+                        }
+                        checkOnResume = false;
+                    }
                 }
             });
             alert.setNegativeButton(R.string.alert_exit, new DialogInterface.OnClickListener() {
@@ -181,11 +199,17 @@ public class OTAUpdaterActivity extends PreferenceActivity {
                 }
             });
             alert.create().show();
-        }
-
-        if (checkOnResume) {
-            checkForRomUpdates();
-            checkOnResume = false;
+        } else if (checkOnResume) {
+            if (Utils.dataAvailable(getApplicationContext())) {
+                Intent i = getIntent();
+                if (i.getAction().equals(NOTIF_ACTION)) {
+                    dialogFromNotif = true;
+                    showUpdateDialog(RomInfo.fromIntent(i));
+                } else {
+                    checkForRomUpdates();
+                }
+                checkOnResume = false;
+            }
         }
     }
 
