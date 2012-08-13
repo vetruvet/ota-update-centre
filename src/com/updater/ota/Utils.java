@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 public class Utils {
     private static String cachedRomID = null;
@@ -102,7 +103,8 @@ public class Utils {
     
     public static boolean dataAvailable(Context ctx) {
         ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo().isConnected();
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        return ni != null && ni.isConnected();
     }
     
     public static Date parseDate(String date) {
